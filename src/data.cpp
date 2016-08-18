@@ -11,7 +11,9 @@
 		//else
 		//	return -1;
 	}
-
+	double data::getRotationAngle(){
+		return this->rot_angle;
+	}
 	cv::Mat data::getImage(){
 		return image.clone();
 	}
@@ -41,7 +43,7 @@
 		// Preprocessing
 		applyBlur(tempImage);
 		double alpha = findRotAngle(tempImage);
-		std::cout << "perfect angle " << alpha << std::endl;
+		//std::cout << "perfect angle " << alpha << std::endl;
 
 		rotateImage(alpha);
 	}
@@ -63,7 +65,7 @@
 			double temp = (sumColumns[i] - sumColumns[i+1]);
 			sum += temp*temp;
 		}
-		cout << "postl " << sum << endl;
+		//cout << "postl " << sum << endl;
 		return sum;
 	}
 
