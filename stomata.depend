@@ -1,0 +1,19 @@
+# depslib dependency file v1.0
+1471285426 source:/home/alex/projects/stomata/main.cpp
+	<iostream>
+	<fstream>
+	<sstream>
+	<string>
+	<cmath>
+	<random>
+	<dirent.h>
+	"opencv2/opencv.hpp"
+	"data.h"
+
+1471285769 /home/alex/projects/stomata/include/data.h
+	<iostream>
+	"opencv2/opencv.hpp"
+
+1471285959 source:/home/alex/projects/stomata/src/data.cpp
+	"data.h"
+
