@@ -11,13 +11,14 @@ class data
 	public:
 		cv::Mat image;
 		char * name;
-		double rot_angle = 0;
 		data(cv::Mat image, std::vector<cv::Point> coordinates, char*name);
 		virtual ~data();
+		double rot_angle = 0;
 
 		int numberOfStomata();
 		cv::Point getCoordinate(int i);
 		cv::Mat getImage();
+		double getRotationAngle();
 		void rotateImage(double alpha);
 		void calc_best_rot_angle();
 		void rotate();
@@ -31,6 +32,7 @@ class data
 	protected:
 	private:
 		std::vector<cv::Point> coordinates;
+
 };
 
 #endif // DATA_H
