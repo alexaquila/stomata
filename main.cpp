@@ -9,9 +9,7 @@
 
 #include "opencv2/opencv.hpp"
 #include "data.h"
-
-
-using namespace std;
+#include "test.h"
 
 int numberOfLayers = 3;
 string imagePath = "data/images/";
@@ -51,6 +49,7 @@ void setRotationAngle(data * data,  string currentLocation){
 		outfile.close();
 	}
 }
+
 void showStomata(data data){
 	string windowName = "Image ";
 	cv::namedWindow(windowName);
@@ -91,7 +90,7 @@ std::vector<data> getData(){
 				}
 				data currentData = data(image, coordinates, name);
 
-				setRotationAngle(&currentData,  rotationPath + entry->d_name + ".txt");
+				setRotationAngle(&currentData,  rotationPath + entry->d_name + ".rot");
 				//showStomata(currentData);
 				datasets.push_back(currentData);
 				location.close();
@@ -104,6 +103,9 @@ std::vector<data> getData(){
 
 int main(void){
 	std::vector<data> datasets = getData();
+	test testInstance = test(&datasets);
+
+	test.startTesting();
 
 	//for(unsigned int i = 0; i<datasets.size(); ++i)
 	/*
