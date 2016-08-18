@@ -29,16 +29,37 @@ void copyChars(char *source, char *target){
 
 void setRotationAngle(data * data,  string currentLocation){
 	//Look, if rotation has already been calculated and stored in data/locations/
-	ifstream location(locationPath + entry->d_name + ".txt");
+	ifstream location(currentLocation);
 	if (location.is_open()){
+		cout << "Previous calulation of rotation-angle found."<< endl;
 
-
-
+		std::string line;
+		std::getline(location, line);
+		std::stringstream iss(line);
+		cout << line << endl;
+		double x = 0;
+		if (!(iss >> data->rot_angle)){
+			cout << " oh no, no parsing "<< endl;
+		}
 	}
 	else{
+		cout << "No previous calulation of rotation-angle found. Calculate Rotation."<< endl;
 
-
+		data->calc_best_rot_angle();
+		std::ofstream outfile (currentLocation);
+		outfile << (double)data->rot_angle << std::endl;
+		outfile.close();
 	}
+}
+void showStomata(data data){
+	string windowName = "Image ";
+	cv::namedWindow(windowName);
+	cv::Mat temp = data.getImage();
+	for(int j = 0; j < data.numberOfStomata(); ++j)
+		cv::circle(temp, data.getCoordinate(j), 20, CV_RGB(255,255,255),10);
+	cv::imshow(windowName + data.name, temp);
+	cv::waitKey(-1);
+	cv::destroyWindow(data.name);
 }
 
 std::vector<data> getData(){
@@ -70,8 +91,8 @@ std::vector<data> getData(){
 				}
 				data currentData = data(image, coordinates, name);
 
-				setRotationAngle(currentData,  rotationPath + entry->d_name + ".txt");
-				showStomata(currentData);
+				setRotationAngle(&currentData,  rotationPath + entry->d_name + ".txt");
+				//showStomata(currentData);
 				datasets.push_back(currentData);
 				location.close();
 			}
@@ -79,16 +100,7 @@ std::vector<data> getData(){
 	}
 	return datasets;
 }
-void showStomata(data data){
-	string windowName = "Image ";
-	cv::namedWindow(windowName);
-	cv::Mat temp = data.getImage();
-	for(int j = 0; j < data.numberOfStomata(); ++j)
-		cv::circle(temp, data.getCoordinate(j), 20, CV_RGB(255,255,255),10);
-	cv::imshow(windowName + data.name, temp);
-	cv::waitKey(-1);
-	cv::destroyWindow(data.name);
-}
+
 
 int main(void){
 	std::vector<data> datasets = getData();
