@@ -103,9 +103,9 @@ std::vector<data> getData(){
 
 int main(void){
 	std::vector<data> datasets = getData();
-	test testInstance = test(&datasets);
+	test testInstance = test(&datasets, 160);
 
-	test.startTesting();
+	testInstance.startTesting();
 
 	//for(unsigned int i = 0; i<datasets.size(); ++i)
 	/*
