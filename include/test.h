@@ -29,7 +29,7 @@ class test
 		int distance = 10;
 		cv::Mat getSubImage(cv::Mat imag, cv::Point center, int size);
 		cv::Mat rotateImage(cv::Mat image,  double angle);
-		cv::Mat getRotatedImage(data currentData, cv::Point point);
+		cv::Mat getRotatedImage(data currentData, int whichClass);
 };
 
 #endif // TEST_H

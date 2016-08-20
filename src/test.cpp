@@ -24,7 +24,7 @@ void test::startTesting(){
 cv::Mat test::getSubImage(cv::Mat imag, cv::Point center, int size){
 	cv::Rect rect(center - cv::Point(size/2, size/2),  center + cv::Point(size/2, size/2));
 	cv::Mat temp= imag(rect);
-	cout << temp.rows  << " rows and " << temp.cols << " cols."<< endl;
+	assert (temp.rows  == size);
 	return temp;
 }
 
@@ -34,33 +34,37 @@ cv::Mat test::rotateImage(cv::Mat image,  double angle){
 	cv::Mat rotImage;
 	cv::warpAffine(image, rotImage, rot , image.size());
 	//return cropped image
-	int newSize =(int) rotImage.cols*(abs(cos(2*angle)));
-	cout << newSize << " cols asdasdasd " << endl;
-	assert (newSize
-
-	 == sizeOfRect);
-	return getSubImage(rotImage, center, rotImage.cols*(abs(cos(2*angle))));
+	int newSize =(rotImage.cols*(abs(cos(angle*M_PI / 180.0))));
+///cout << newSize << " newsize cols asdasdasd " << rotImage.cols << " rotImage.colscols  "<< endl;
+	assert (newSize >= sizeOfRect);
+	return getSubImage(rotImage, center, sizeOfRect);
 }
 
-cv::Mat test::getRotatedImage(data currentData, cv::Point point){
-	cv::Mat temp = currentData.getImage();
+cv::Mat test::getRotatedImage(data currentData, int whichClass){
+	double angleInRad = M_PI / 180.0 * currentData.rot_angle;
 	//get the size to crop a picture of desired size after rotation.
-	int sizeBefRot 	= ceil (sizeOfRect/(abs(cos(2*currentData.rot_angle))));
-	int proofsize  = sizeBefRot*(abs(cos(2*currentData.rot_angle)));
+	int sizeBefRot 	= ceil (sizeOfRect/(abs(cos(angleInRad))));
+int proofsize  = sizeBefRot*(abs(cos(angleInRad)));
 	//Assert even number
-	if(sizeBefRot % 2 !=0)
+	if((sizeBefRot % 2)	!= 0)
 		++sizeBefRot ;
-	cout <<  currentData.rot_angle << " currentData.rot_angle " << sizeBefRot << " sizeBefRot " << proofsize << " proofsize ."<< endl;
-
-	assert (proofsize == sizeOfRect);
-	cv::Mat subImag = getSubImage(temp, point, sizeBefRot);
-
-	cout << subImag.rows  << " mrows and " << subImag.cols << " cols."<< endl;
-
+	cv::Size imageSize = currentData.imageSize();
+	std::uniform_int_distribution<int> xDistribution(sizeBefRot/2,imageSize.width-sizeBefRot/2);
+	int x = xDistribution(generator);
+	std::uniform_int_distribution<int> yDistribution(sizeBefRot/2,imageSize.height-sizeBefRot/2);
+	int y = yDistribution(generator);
+	cv::Point point(x,y);
+///	if(sizeBefRot/2 >point.x || sizeBefRot/2 >point.y || sizeBefRot/2 >currentData.imageSize().width-point.x || sizeBefRot/2 >currentData.imageSize().height-point.y )
+///		cout << "oh no" << endl;
+///cout <<  currentData.rot_angle << " currentData.rot_angle " <<  angleInRad << " angleInRad " << sizeBefRot << " sizeBefRot " << proofsize << " proofsize ."<< endl;
+///	assert (proofsize == sizeOfRect);
+///cout <<  x << " x " <<  y << " y " << sizeBefRot << " sizeBefRot " << endl;
+	cv::Mat subImag = getSubImage(currentData.getImage(), point, sizeBefRot);
+///cout << subImag.rows  << " mrows and " << subImag.cols << " cols."<< endl;
 	subImag = rotateImage(subImag, currentData.rot_angle);
-
-	cout << subImag.rows  << " rmmows and " << subImag.cols << " cols."<< endl;
+///	cout << subImag.rows  << " rmmows and " << subImag.cols << " cols."<< endl;
 	assert (subImag.rows == sizeOfRect && subImag.cols == sizeOfRect );
+
 	return subImag;
 }
 
@@ -75,35 +79,20 @@ cv::Mat test::generateTrainingData(int numberOfTrainingElements){
 		while(!foundSample){
 			std::uniform_int_distribution<int> pictureDistribution(0,this->numberOfTrainingImages-1);
 			int dataInt = pictureDistribution(generator);
-			cout << "Choose data number " <<dataInt << endl;
+///			cout << "Choose data number " <<dataInt << endl;
             data  currentData = datasets->at(dataInt);
-
-            cv::Size imageSize = currentData.imageSize();
-			std::uniform_int_distribution<int> xDistribution(0,imageSize.width);
-			int x = xDistribution(generator);
-			std::uniform_int_distribution<int> yDistribution(0,imageSize.height);
-			int y = yDistribution(generator);
-			try{
-				getRotatedImage(currentData, cv::Point(x, y));
+            //getRotatedImage throws exception when the sample is part of the wrong class
+            try{
+				getRotatedImage(currentData, whichClass);
 			}
 			catch(int e){
+				cout << "wrong class found"<<endl;
 				continue;
 			}
-
-			if( whichClass== 0){
-
-
-			}
-			else{
-
-			}
+			foundSample =true;
 		}
 	}
-
-
-
-
-
+	cout << "Finished sampling classes"<<endl;
 }
 
 
