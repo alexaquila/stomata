@@ -1,3 +1,3 @@
 # stomata
 
-Stomata recognition based on neural networks, implemented with opencl.
+Stomata recognition based on neural networks, implemented with opencv.

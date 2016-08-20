@@ -19,7 +19,7 @@ class data
 		cv::Point getCoordinate(int i);
 		cv::Mat getImage();
 		double getRotationAngle();
-		void rotateImage(double alpha);
+
 		void calc_best_rot_angle();
 		void rotate();
 
@@ -29,6 +29,8 @@ class data
 		static double calculatePostlRating(double *sumColumns, int numberCols);
 		static double findRotAngle(cv::Mat image);
 		static void applyBlur(cv::Mat image);
+		static cv::Mat rotateImage(cv::Mat image, double alpha);
+
 	protected:
 	private:
 		std::vector<cv::Point> coordinates;

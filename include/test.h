@@ -2,9 +2,11 @@
 #define TEST_H
 
 #include <iostream>
+#include <random>
 #include <assert.h>
 #include "data.h"
 #include "neuralNetwork.h"
+
 
 class test
 {
@@ -16,8 +18,11 @@ class test
 
 		void startTesting();
 		int getNumberOfElements();
+		cv::Mat generateTrainingData(int numberOfTrainingElements);
+
 	protected:
 	private:
+		std::default_random_engine generator;
 		neuralNetwork NN;
 		std::vector<data> *datasets;
 };

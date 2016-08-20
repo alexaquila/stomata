@@ -18,8 +18,9 @@
 		return image.clone();
 	}
 
-	void data::rotateImage(double alpha){
+	cv::Mat data::rotateImage(cv::Mat image,  double alpha){
 		// get rotation matrix for rotating the image around its center
+
 		cv::Point2f center(image.cols/2.0, image.rows/2.0);
 		cv::Mat rot = cv::getRotationMatrix2D(center, alpha, 1.0);
 		// determine bounding rectangle
@@ -28,6 +29,7 @@
 		rot.at<double>(0,2) += bbox.width/2.0 - center.x;
 		rot.at<double>(1,2) += bbox.height/2.0 - center.y;
 		cv::warpAffine(image, image, rot, bbox.size());
+		return image;
 	}
 
 	void data::calc_best_rot_angle(){
@@ -37,7 +39,7 @@
 		this->rot_angle = angle;
 	}
 
-	void data::rotate(){
+/*	void data::rotate(){
 		// Clone constant Mat
 		cv::Mat tempImage = this->getImage();
 		// Preprocessing
@@ -47,7 +49,7 @@
 
 		rotateImage(alpha);
 	}
-
+*/
 	void data::rotateAroundCenter(int& out_r, int& out_c,
 		const int in_r, const int in_c, const int rws, const int cls,
 		const double cos_a, const double sin_a){

@@ -9,12 +9,16 @@ class neuralNetwork
 	public:
 		neuralNetwork();
 		virtual ~neuralNetwork();
+		void trainNN(cv::Mat& trainingData, cv::Mat& trainingClasses);
 	protected:
 	private:
 		void setNNparams();
 		int numberOfLayers();
 		std::vector<int> layerSizes;
 		int inputSize = 256;
+		CvANN_MLP mlp;
+		CvANN_MLP_TrainParams params;
+
 };
 
 #endif // NEURALNETWORK_H

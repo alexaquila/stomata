@@ -7,11 +7,11 @@
 #include <random>
 #include <dirent.h>
 
-#include "opencv2/opencv.hpp"
 #include "data.h"
 #include "test.h"
 
 int numberOfLayers = 3;
+int sizeOfRect = 72;
 string imagePath = "data/images/";
 string locationPath = "data/locations/";
 string rotationPath = "data/rotations/";
@@ -101,11 +101,68 @@ std::vector<data> getData(){
 }
 
 
+cv::Mat getSubImage(cv::Mat imag, cv::Point center, int size){
+	cv::Rect rect(center - cv::Point(size/2, size/2),  center + cv::Point(size/2, size/2));
+	cv::Mat temp= imag(rect);
+	cout << temp.rows  << " rows and " << temp.cols << " cols."<< endl;
+	return temp;
+}
+
+
+cv::Mat rotateImage(cv::Mat image,  double angle){
+	cv::Point center(image.cols/2.0, image.rows/2.0);
+	cv::Mat rot = cv::getRotationMatrix2D(center, angle, 1.0);
+	// determine bounding rectangle
+	// adjust transformation matrix
+	//rot.at<double>(0,2) += bbox.width/2.0 - center.x;
+	//rot.at<double>(1,2) += bbox.height/2.0 - center.y;
+	cv::warpAffine(image, image, rot , image.size());
+
+	return getSubImage(image, center, image.cols*(abs(cos(2*angle))));
+}
+
+
+
+
+
 int main(void){
 	std::vector<data> datasets = getData();
 	test testInstance = test(&datasets, 160);
+//	showStomata(datasets[0]);
+	//testInstance.startTesting();
 
-	testInstance.startTesting();
+	string windowName = "Image ";
+	cv::namedWindow(windowName);
+	cv::Mat temp = datasets[0].getImage();
+	for(int j = 0; j < 1; ++j) //datasets[0].numberOfStomata(); ++j)
+		cv::rectangle(temp, datasets[0].getCoordinate(j) - cv::Point(36, 36),  datasets[0].getCoordinate(j) + cv::Point(36, 36), CV_RGB(255,255,255),4);
+	cv::imshow(windowName + datasets[0].name, temp);
+	cv::waitKey(-1);
+	cv::destroyWindow(datasets[0].name);
+	int sizeBefRot 	= 100;
+	cv::Mat miniMat = getSubImage(temp, datasets[0].getCoordinate(0), sizeBefRot);
+
+	cv::imshow(windowName + datasets[0].name, miniMat);
+	cv::waitKey(-1);
+
+	cout << miniMat.rows  << " mrows and " << miniMat.cols << " cols."<< endl;
+
+	cv::Mat miniminiMat = rotateImage(miniMat, datasets[0].rot_angle);
+
+	cout << miniminiMat.rows  << " rmmows and " << miniminiMat.cols << " cols."<< endl;
+
+	cv::imshow(windowName + datasets[0].name, miniminiMat);
+	cv::waitKey(-1);
+
+
+
+	cv::imshow(windowName + datasets[0].name, miniMat);
+	cv::waitKey(-1);
+
+	cv::destroyWindow(datasets[0].name);
+
+
+
 
 	//for(unsigned int i = 0; i<datasets.size(); ++i)
 	/*
