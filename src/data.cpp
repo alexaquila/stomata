@@ -116,7 +116,9 @@
 		return;
 	}
 
-
+	cv::Size data::imageSize(){
+		return this->image.size();
+	}
 
 data::data(cv::Mat image, std::vector<cv::Point> coordinates, char*name) :
 			image(image), coordinates(coordinates), name(name) { }

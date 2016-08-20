@@ -11,20 +11,25 @@
 class test
 {
 	public:
-		int numberOfTestElements;
-		int numberOfTrainingElements = 10;
-		test(std::vector<data> *datasets, int numberOfTrainingElements);
+		int numberOfTestImages;
+		int numberOfTrainingImages= 10;
+		test(std::vector<data> *datasets, int numberOfTrainingImages);
 		virtual ~test();
 
 		void startTesting();
-		int getNumberOfElements();
+		int getNumberOfImages();
 		cv::Mat generateTrainingData(int numberOfTrainingElements);
 
 	protected:
 	private:
+		int sizeOfRect;
 		std::default_random_engine generator;
 		neuralNetwork NN;
 		std::vector<data> *datasets;
+		int distance = 10;
+		cv::Mat getSubImage(cv::Mat imag, cv::Point center, int size);
+		cv::Mat rotateImage(cv::Mat image,  double angle);
+		cv::Mat getRotatedImage(data currentData, cv::Point point);
 };
 
 #endif // TEST_H

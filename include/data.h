@@ -22,6 +22,7 @@ class data
 
 		void calc_best_rot_angle();
 		void rotate();
+		cv::Size imageSize();
 
 		static void  rotateAroundCenter(int& out_r, int& out_c,
 			const int in_r, const int in_c, const int rws, const int cls,
