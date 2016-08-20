@@ -11,10 +11,10 @@
 #include "test.h"
 
 int numberOfLayers = 3;
-int sizeOfRect = 72;
 string imagePath = "data/images/";
 string locationPath = "data/locations/";
 string rotationPath = "data/rotations/";
+
 void copyChars(char *source, char *target){
 	int i= 0;
 	while(source[i] != '\0'){
@@ -23,7 +23,6 @@ void copyChars(char *source, char *target){
 	}
 	target[i] = '\0';
 }
-
 
 void setRotationAngle(data * data,  string currentLocation){
 	//Look, if rotation has already been calculated and stored in data/locations/
@@ -36,7 +35,7 @@ void setRotationAngle(data * data,  string currentLocation){
 		std::stringstream iss(line);
 		cout << line << endl;
 		double x = 0;
-		if (!(iss >> data->rot_angle)){
+		if (!(iss >> data->angle)){
 			cout << " oh no, no parsing "<< endl;
 		}
 	}
@@ -45,7 +44,7 @@ void setRotationAngle(data * data,  string currentLocation){
 
 		data->calc_best_rot_angle();
 		std::ofstream outfile (currentLocation);
-		outfile << (double)data->rot_angle << std::endl;
+		outfile << (double)data->angle << std::endl;
 		outfile.close();
 	}
 }
@@ -60,6 +59,7 @@ void showStomata(data data){
 	cv::waitKey(-1);
 	cv::destroyWindow(data.name);
 }
+
 
 std::vector<data> getData(){
 	std::vector<data> datasets;
@@ -105,53 +105,21 @@ int main(void){
 	std::vector<data> datasets = getData();
 	test testInstance = test(&datasets, 160);
 //	showStomata(datasets[0]);
-	testInstance.startTesting();
-/*
-	string windowName = "Image ";
-	cv::namedWindow(windowName);
-	cv::Mat temp = datasets[0].getImage();
-	for(int j = 0; j < 1; ++j) //datasets[0].numberOfStomata(); ++j)
-		cv::rectangle(temp, datasets[0].getCoordinate(j) - cv::Point(36, 36),  datasets[0].getCoordinate(j) + cv::Point(36, 36), CV_RGB(255,255,255),4);
-	cv::imshow(windowName + datasets[0].name, temp);
-	cv::waitKey(-1);
-	cv::destroyWindow(datasets[0].name);
-	//get the size to crop a picture of desired size after rotation.
-	int sizeBefRot 	= ceil (sizeOfRect/(abs(cos(2*datasets[0].rot_angle))));
-	cv::Mat miniMat = getSubImage(temp, datasets[0].getCoordinate(0), sizeBefRot);
 
-	cv::imshow(windowName + datasets[0].name, miniMat);
-	cv::waitKey(-1);
-
-	cout << miniMat.rows  << " mrows and " << miniMat.cols << " cols."<< endl;
-
-	cv::Mat miniminiMat = rotateImage(miniMat, datasets[0].rot_angle);
-
-	cout << miniminiMat.rows  << " rmmows and " << miniminiMat.cols << " cols."<< endl;
-
-	cv::imshow(windowName + datasets[0].name, miniminiMat);
-	cv::waitKey(-1);
-
-
-
-	cv::imshow(windowName + datasets[0].name, miniMat);
-	cv::waitKey(-1);
-
-	cv::destroyWindow(datasets[0].name);
-
-*/
-
-
-	//for(unsigned int i = 0; i<datasets.size(); ++i)
-	/*
-	for(unsigned int i = 0; i<2; ++i){
-		showStomata(datasets[i]);
-		datasets[i].calc_best_rot_angle();
-		datasets[i].rotate();
-		showStomata(datasets[i]);
+	for(int i=0; i<datasets.size(); ++i){
+		string windowName = "Image ";
+		cv::namedWindow(windowName);
+		cv::Mat image = datasets[i].getImage();
+		cv::Point center(image.cols/2.0, image.rows/2.0);
+		cv::Mat rot = cv::getRotationMatrix2D(center, datasets[i].angle, 1.0);
+		cv::warpAffine(image, image, rot , image.size());
+		for(int j = 0; j < datasets[i].numberOfStomata(); ++j)
+			cv::circle(image, datasets[i].getCoordinate(j), 20, CV_RGB(255,255,255),10);
+		cv::imshow(windowName + datasets[i].name, image);
+		cv::waitKey(-1);
+		cv::destroyWindow(datasets[i].name);
 	}
-	*/
-
-
+	testInstance.startTesting();
 	return EXIT_SUCCESS;
 }
 

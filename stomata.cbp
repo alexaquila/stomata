@@ -49,10 +49,12 @@
 		</Linker>
 		<Unit filename="include/data.h" />
 		<Unit filename="include/neuralNetwork.h" />
+		<Unit filename="include/rotation.h" />
 		<Unit filename="include/test.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/data.cpp" />
 		<Unit filename="src/neuralNetwork.cpp" />
+		<Unit filename="src/rotation.cpp" />
 		<Unit filename="src/test.cpp" />
 		<Extensions>
 			<code_completion />

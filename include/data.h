@@ -13,7 +13,7 @@ class data
 		char * name;
 		data(cv::Mat image, std::vector<cv::Point> coordinates, char*name);
 		virtual ~data();
-		double rot_angle = 0;
+		double angle = 0;
 
 		int numberOfStomata();
 		cv::Point getCoordinate(int i);
@@ -21,7 +21,7 @@ class data
 		double getRotationAngle();
 
 		void calc_best_rot_angle();
-		void rotate();
+	//	void rotate();
 		cv::Size imageSize();
 
 		static void  rotateAroundCenter(int& out_r, int& out_c,

@@ -12,7 +12,7 @@
 		//	return -1;
 	}
 	double data::getRotationAngle(){
-		return this->rot_angle;
+		return this->angle;
 	}
 	cv::Mat data::getImage(){
 		return image.clone();
@@ -36,7 +36,7 @@
 		cv::Mat tempImage = this->getImage();
 		applyBlur(tempImage);
 		double angle = findRotAngle(tempImage);
-		this->rot_angle = angle;
+		this->angle = angle;
 	}
 
 /*	void data::rotate(){
