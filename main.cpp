@@ -92,6 +92,20 @@ std::vector<data> getData(){
 
 				setRotationAngle(&currentData,  rotationPath + entry->d_name + ".rot");
 				//showStomata(currentData);
+
+/*
+				string windowName = "Image ";
+				cv::namedWindow(windowName);
+				image = currentData.getImage();
+				cv::Point center(image.cols/2.0, image.rows/2.0);
+				cv::Mat rot = cv::getRotationMatrix2D(center, currentData.angle, 1.0);
+				cv::warpAffine(image, image, rot , image.size());
+				for(int j = 0; j < currentData.numberOfStomata(); ++j)
+					cv::circle(image, currentData.getCoordinate(j), 20, CV_RGB(255,255,255),10);
+				cv::imshow(windowName + currentData.name, image);
+				cv::waitKey(-1);
+				cv::destroyWindow(windowName + currentData.name);
+*/
 				datasets.push_back(currentData);
 				location.close();
 			}

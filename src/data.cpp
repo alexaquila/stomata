@@ -20,7 +20,6 @@
 
 	cv::Mat data::rotateImage(cv::Mat image,  double alpha){
 		// get rotation matrix for rotating the image around its center
-
 		cv::Point2f center(image.cols/2.0, image.rows/2.0);
 		cv::Mat rot = cv::getRotationMatrix2D(center, alpha, 1.0);
 		// determine bounding rectangle
@@ -35,8 +34,9 @@
 	void data::calc_best_rot_angle(){
 		cv::Mat tempImage = this->getImage();
 		applyBlur(tempImage);
-		double angle = rotation::findRotAngle2(tempImage);
+		double angle = rotation::findRotAngle(tempImage);
 		this->angle = angle;
+
 	}
 
 	void data::applyBlur(cv::Mat image){

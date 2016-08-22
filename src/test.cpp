@@ -124,6 +124,7 @@ cv::Mat test::generateTrainingData(int numberOfTrainingElements){
 			cv::Mat temp = rotateImage(currentData.getImage() , currentData.angle);
 			for(int j = 0; j < currentData.numberOfStomata(); ++j)
 				cv::circle(temp, currentData.getCoordinate(j), 20, CV_RGB(255,255,255),10);
+
 			cv::imshow(windowName + currentData.name, temp);
 			cv::waitKey(-1);
 
