@@ -119,7 +119,7 @@ int main(void){
 	std::vector<data> datasets = getData();
 	test testInstance = test(&datasets, 160);
 //	showStomata(datasets[0]);
-
+/*
 	for(int i=0; i<datasets.size(); ++i){
 		string windowName = "Image ";
 		cv::namedWindow(windowName);
@@ -133,7 +133,8 @@ int main(void){
 		cv::waitKey(-1);
 		cv::destroyWindow(windowName + datasets[i].name);
 	}
-	testInstance.startTesting();
+	*/
+	testInstance.startTesting(1000);
 	return EXIT_SUCCESS;
 }
 
