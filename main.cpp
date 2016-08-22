@@ -55,9 +55,9 @@ void showStomata(data data){
 	cv::Mat temp = data.getImage();
 	for(int j = 0; j < data.numberOfStomata(); ++j)
 		cv::circle(temp, data.getCoordinate(j), 20, CV_RGB(255,255,255),10);
-	cv::imshow(windowName + data.name, temp);
+	cv::imshow(windowName , temp);
 	cv::waitKey(-1);
-	cv::destroyWindow(data.name);
+	cv::destroyWindow(windowName);
 }
 
 
@@ -117,7 +117,7 @@ int main(void){
 			cv::circle(image, datasets[i].getCoordinate(j), 20, CV_RGB(255,255,255),10);
 		cv::imshow(windowName + datasets[i].name, image);
 		cv::waitKey(-1);
-		cv::destroyWindow(datasets[i].name);
+		cv::destroyWindow(windowName + datasets[i].name);
 	}
 	testInstance.startTesting();
 	return EXIT_SUCCESS;
