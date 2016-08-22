@@ -10,7 +10,6 @@ rotation::~rotation()
 	//dtor
 }
 
-
 //Better idea: find a quadratic rectangle, which can be completely rotated in the middle of image
 //Calculate postlrating for that, makes also rotations over 45^degrees comparable
 double rotation::findRotAngle(cv::Mat image){

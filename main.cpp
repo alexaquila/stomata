@@ -134,7 +134,7 @@ int main(void){
 		cv::destroyWindow(windowName + datasets[i].name);
 	}
 	*/
-	testInstance.startTesting(1000);
+	testInstance.startTesting(100);
 	return EXIT_SUCCESS;
 }
 

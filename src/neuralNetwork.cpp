@@ -1,7 +1,8 @@
 #include "neuralNetwork.h"
 void neuralNetwork::setNNparams(){
 	layerSizes.push_back(inputSize);
-	layerSizes.push_back(10);
+	layerSizes.push_back(50);
+	layerSizes.push_back(50);
 	layerSizes.push_back(1);
 
 	//std::cout << "number of layers " << layerSizes.size() <<std::endl;
@@ -36,6 +37,14 @@ neuralNetwork::~neuralNetwork()
 void neuralNetwork::trainNN(cv::Mat& trainingData, cv::Mat& trainingClasses){
 	this->mlp.train(trainingData, trainingClasses, cv::Mat(), cv::Mat(), params);
 }
+
+cv::Mat neuralNetwork::predictNN(cv::Mat sample){
+	cv::Mat result(1, 1, CV_32FC1);
+
+	this->mlp.predict(sample, result);
+	return result;
+}
+
 int neuralNetwork::numberOfLayers(){
 	return 	layerSizes.size();
 }

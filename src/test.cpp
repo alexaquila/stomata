@@ -5,7 +5,7 @@ test::test(std::vector<data> *datasets, int numberOfTrainingImages){
 	this->numberOfTrainingImages = numberOfTrainingImages;
 	numberOfTestImages = this->getNumberOfImages() - numberOfTrainingImages;
 	assert (numberOfTestImages > 0);
-	//SubImages have size 72x72
+	//SubImages have size 64x64
 	this->sizeOfRect = 64;
 }
 
@@ -14,10 +14,80 @@ test::~test(){
 }
 
 void test::startTesting(int numberOfTrainingElements ){
+	cout << "Generate training data." << endl;
 	cv::Mat trainingClasses(numberOfTrainingElements,1,CV_32FC1);
 	cv::Mat trainingData = generateTrainingData(numberOfTrainingElements, trainingClasses);
+	cout << "Training neural network." << endl;
 	this->NN.trainNN(trainingData, trainingClasses);
+	cout << "Finished training neural network." << endl;
 
+	testTestData();
+}
+
+void test::testTestData(){
+	for(int i=0; i< this->numberOfTestImages; ++i){
+		data currentData = this->datasets->at(i+this->numberOfTrainingImages);
+		cout << "testing number " << i <<endl;
+
+		cv::Mat result = positiveMatches(currentData);
+
+		string windowName = "Image ";
+		cv::namedWindow(windowName);
+		//cv::Mat temp = rotateImage(currentData.getImage() , currentData.angle);
+		cout << "width  is " <<  currentData.imageSize().width << " height is " <<  currentData.imageSize().height << endl;
+		cout << "cols  is " <<  result.cols << " rows " <<  result.rows<< endl;
+
+		cv::Size imageSize = currentData.imageSize();
+		cv::Mat mergeImag(imageSize.height, imageSize.width, CV_32FC3);
+		for(int y=0; y<imageSize.height; ++y){
+			for(int x=0; x<imageSize.width; ++x){
+				//Vec3b color = image.at<Vec3b>(Point(x,y));
+				//mergeImag =Vec3b & color = image.at<Vec3b>(y,x);
+				mergeImag.at<cv::Vec3b>(y,x)[0] = 0;
+				mergeImag.at<cv::Vec3b>(y,x)[1] = currentData.getImage().at<float>(y,x);
+				mergeImag.at<cv::Vec3b>(y,x)[2] = 0;
+
+			}
+		}
+		cv::imshow(windowName + currentData.name, result);
+		cv::waitKey(-1);
+
+		cv::imshow(windowName + currentData.name, mergeImag);
+		cv::waitKey(-1);
+		cv::destroyWindow(windowName + currentData.name);
+	}
+}
+
+cv::Mat test::positiveMatches(data currentData){
+	cv::Size imageSize = currentData.imageSize();
+    cv::Mat result(imageSize.height, imageSize.width, CV_32F);
+	double angleInRad = M_PI / 180.0 * currentData.angle;
+	double cropfactor = 2*abs(cos(angleInRad)) + 2*abs(sin(angleInRad));
+	//get the size to crop a picture of desired size after rotation.
+	int sizeBefRot 	= ceil(sizeOfRect*cropfactor);
+
+	for(int y=sizeBefRot/2; y<imageSize.height-sizeBefRot/2; ++y){
+		cout << "Point y " << y <<endl;
+		for(int x=sizeBefRot/2; x<imageSize.width-sizeBefRot/2; ++x){
+
+			cv::Point point(x,y);
+
+			cv::Mat sampleImage = getSubImage(currentData.getImage(), point, sizeBefRot);
+			sampleImage = rotateImageCropped(sampleImage, currentData.angle, cropfactor);
+
+			cv::resize(sampleImage, sampleImage, cv::Size(this->sizeOfRect/4, this->sizeOfRect/4));
+
+			cv::Mat sample(1, this->networkInputSize, CV_32FC1);
+			uchar* img_d = sampleImage.data;
+			for(int j = 0; j < this->networkInputSize;  ++j){
+				sample.at<float>(0,j) =  img_d[j];
+			}
+			cv::Mat predicted = NN.predictNN(sample);
+
+			result.at<float>(y,x) = predicted.at<float>(0,0);
+		}
+	}
+	return result;
 }
 
 /* Idea: generate with a probability of 0.5 a positive or negative trainingsdata.
@@ -43,7 +113,7 @@ cv::Mat test::generateTrainingData(int numberOfTrainingElements, cv::Mat& traini
 				// cout << "wrong class found "<< whichClass<<endl;
 				continue;
 			}
-			cout << "class found "<< whichClass <<endl;
+			//cout << "class found "<< whichClass <<endl;
 			trainingClass.at<float>(i,0) = whichClass;
 			string windowName = "Image ";
 /*
@@ -55,19 +125,17 @@ cv::Mat test::generateTrainingData(int numberOfTrainingElements, cv::Mat& traini
 			cv::imshow(windowName + currentData.name, temp);
 			cv::waitKey(-1);
 
-
 			cv::imshow(windowName + currentData.name, sampleImage);
 			cv::waitKey(-1);
 			cv::destroyWindow(windowName + currentData.name);
 */
 			// Do stuff with sample
 			// Here: make picture smallsmall
-			cv::resize(sampleImage, sampleImage, cv::Size(this->networkInputSize/4, this->networkInputSize/4));
+			cv::resize(sampleImage, sampleImage, cv::Size(this->sizeOfRect/4, this->sizeOfRect/4));
 			uchar* img_d = sampleImage.data;
 			for(int j = 0; j < this->networkInputSize;  ++j){
 				trainingData.at<float>(i,j) =  img_d[j];
 			}
-			//
 			foundSample =true;
 		}
 	}
@@ -88,6 +156,7 @@ int test::getClass(data currentData, cv::Point point){
 	}
 	return currentClass;
 }
+
 cv::Mat test::getSubImage(cv::Mat imag, cv::Point center, int size){
 	cv::Rect rect(center - cv::Point(size/2, size/2),  center + cv::Point(size/2, size/2));
 	cv::Mat temp= imag(rect);
@@ -103,15 +172,11 @@ cv::Mat test::rotateImage(cv::Mat image,  double angle){
 	return rotImage;
 }
 
-
-
 cv::Mat test::rotateImageCropped(cv::Mat image,  double angle, double cropfactor){
 	cv::Point center(image.cols/2.0, image.rows/2.0);
-
 	cv::Mat rotImage = rotateImage(image, angle);
 	//return cropped image
 	int newSize =rotImage.cols/cropfactor;
-	//cout << newSize << " newsize cols asdasdasd " << rotImage.cols << " rotImage.colscols  "<< endl;
 	assert (newSize >= sizeOfRect && newSize < sizeOfRect+1 );
 	return getSubImage(rotImage, center, sizeOfRect);
 }
@@ -131,23 +196,14 @@ cv::Mat test::getRotatedImage(data currentData, int whichClass){
 	std::uniform_int_distribution<int> yDistribution(sizeBefRot/2,imageSize.height-sizeBefRot/2);
 	int y = yDistribution(generator);
 	cv::Point point(x,y);
-///	if(sizeBefRot/2 >point.x || sizeBefRot/2 >point.y || sizeBefRot/2 >currentData.imageSize().width-point.x || sizeBefRot/2 >currentData.imageSize().height-point.y )
-///		cout << "oh no" << endl;
-//cout <<  currentData.angle << " currentData.rot_angle " <<  angleInRad << " angleInRad " << sizeBefRot << " sizeBefRot " << proofsize << " proofsize ."<< endl;
 	assert (proofsize == sizeOfRect);
-//cout <<  x << " x " <<  y << " y " << sizeBefRot << " sizeBefRot "<< imageSize.width << " imageSize.width "<< imageSize.height << " imageSize.height " << endl;
 	cv::Mat subImag = getSubImage(currentData.getImage(), point, sizeBefRot);
-//cout << subImag.rows  << " mrows and " << subImag.cols << " cols."<< endl;
 	subImag = rotateImageCropped(subImag, currentData.angle, cropfactor);
-///	cout << subImag.rows  << " rmmows and " << subImag.cols << " cols."<< endl;
 	assert (subImag.rows == sizeOfRect && subImag.cols == sizeOfRect );
 	if(getClass(currentData, point) != whichClass)
 		throw 0;
 	return subImag;
 }
-
-
-
 
 int test::getNumberOfImages(){
 	return datasets->size();

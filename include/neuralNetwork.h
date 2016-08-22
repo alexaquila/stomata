@@ -10,6 +10,7 @@ class neuralNetwork
 		neuralNetwork();
 		virtual ~neuralNetwork();
 		void trainNN(cv::Mat& trainingData, cv::Mat& trainingClasses);
+		cv::Mat predictNN(cv::Mat sample);
 	protected:
 	private:
 		void setNNparams();

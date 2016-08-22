@@ -33,6 +33,9 @@ class test{
 		cv::Mat rotateImage(cv::Mat image, double angle);
 		cv::Mat getRotatedImage(data currentData, int whichClass);
 
+		cv::Mat positiveMatches(data currentData);
+
 		int getClass(data currentData, cv::Point point);
+		void testTestData();
 };
 #endif // TEST_H
