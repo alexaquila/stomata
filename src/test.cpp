@@ -62,12 +62,15 @@ cv::Mat test::positiveMatches(data currentData){
 	cv::Size imageSize = currentData.imageSize();
     cv::Mat result(imageSize.height, imageSize.width, CV_32F);
 	double angleInRad = M_PI / 180.0 * currentData.angle;
-	double cropfactor = 2*abs(cos(angleInRad)) + 2*abs(sin(angleInRad));
+	double cropfactor = abs(cos(angleInRad)) + abs(sin(angleInRad));
 	//get the size to crop a picture of desired size after rotation.
 	int sizeBefRot 	= ceil(sizeOfRect*cropfactor);
-
+		//Assert even number
+	if((sizeBefRot % 2)	!= 0)
+		++sizeBefRot ;
+	//cout << "cropfactor " << cropfactor <<endl;
 	for(int y=sizeBefRot/2; y<imageSize.height-sizeBefRot/2; ++y){
-		cout << "Point y " << y <<endl;
+		//cout << "Point y " << y <<endl;
 		for(int x=sizeBefRot/2; x<imageSize.width-sizeBefRot/2; ++x){
 
 			cv::Point point(x,y);
@@ -116,19 +119,6 @@ cv::Mat test::generateTrainingData(int numberOfTrainingElements, cv::Mat& traini
 			//cout << "class found "<< whichClass <<endl;
 			trainingClass.at<float>(i,0) = whichClass;
 			string windowName = "Image ";
-/*
-			cv::namedWindow(windowName);
-			cv::Mat temp = rotateImage(currentData.getImage() , currentData.angle);
-			for(int j = 0; j < currentData.numberOfStomata(); ++j)
-				cv::circle(temp, currentData.getCoordinate(j), 20, CV_RGB(255,255,255),10);
-
-			cv::imshow(windowName + currentData.name, temp);
-			cv::waitKey(-1);
-
-			cv::imshow(windowName + currentData.name, sampleImage);
-			cv::waitKey(-1);
-			cv::destroyWindow(windowName + currentData.name);
-*/
 			// Do stuff with sample
 			// Here: make picture smallsmall
 			cv::resize(sampleImage, sampleImage, cv::Size(this->sizeOfRect/4, this->sizeOfRect/4));
@@ -160,6 +150,7 @@ int test::getClass(data currentData, cv::Point point){
 cv::Mat test::getSubImage(cv::Mat imag, cv::Point center, int size){
 	cv::Rect rect(center - cv::Point(size/2, size/2),  center + cv::Point(size/2, size/2));
 	cv::Mat temp= imag(rect);
+	//cout << "temp.rows " << temp.rows <<  " size " << size <<endl;
 	assert (temp.rows  == size);
 	return temp;
 }
@@ -173,17 +164,18 @@ cv::Mat test::rotateImage(cv::Mat image,  double angle){
 }
 
 cv::Mat test::rotateImageCropped(cv::Mat image,  double angle, double cropfactor){
+	//cout << "cropfactor " << cropfactor << endl;
 	cv::Point center(image.cols/2.0, image.rows/2.0);
 	cv::Mat rotImage = rotateImage(image, angle);
 	//return cropped image
 	int newSize =rotImage.cols/cropfactor;
-	assert (newSize >= sizeOfRect && newSize < sizeOfRect+1 );
+	assert (newSize >= sizeOfRect && newSize <= sizeOfRect+1 );
 	return getSubImage(rotImage, center, sizeOfRect);
 }
 
 cv::Mat test::getRotatedImage(data currentData, int whichClass){
 	double angleInRad = M_PI / 180.0 * currentData.angle;
-	double cropfactor = 2*abs(cos(angleInRad)) + 2*abs(sin(angleInRad));
+	double cropfactor = abs(cos(angleInRad)) + abs(sin(angleInRad));
 	//get the size to crop a picture of desired size after rotation.
 	int sizeBefRot 	= ceil(sizeOfRect*cropfactor);
 	int proofsize  = sizeBefRot/cropfactor;
