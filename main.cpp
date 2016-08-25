@@ -117,7 +117,7 @@ std::vector<data> getData(){
 
 int main(void){
 	std::vector<data> datasets = getData();
-	test testInstance = test(&datasets, 160);
+	test testInstance = test(&datasets, 1000);
 //	showStomata(datasets[0]);
 /*
 	for(int i=0; i<datasets.size(); ++i){

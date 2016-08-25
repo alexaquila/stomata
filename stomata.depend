@@ -25,14 +25,14 @@
 	"data.h"
 	"neuralNetwork.h"
 
-1472116893 source:/home/alex/projects/stomata/src/test.cpp
+1472137524 source:/home/alex/projects/stomata/src/test.cpp
 	"test.h"
 
 1471894770 /home/alex/projects/stomata/include/neuralNetwork.h
 	<iostream>
 	"opencv2/opencv.hpp"
 
-1471897977 source:/home/alex/projects/stomata/src/neuralNetwork.cpp
+1472134484 source:/home/alex/projects/stomata/src/neuralNetwork.cpp
 	"neuralNetwork.h"
 
 1471857262 /home/alex/projects/stomata/include/rotation.h

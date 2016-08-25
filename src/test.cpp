@@ -1,6 +1,5 @@
 #include "test.h"
 test::test(std::vector<data> *datasets, int numberOfTrainingImages){
-
 	this->datasets = datasets;
 	this->numberOfTrainingImages = numberOfTrainingImages;
 	numberOfTestImages = this->getNumberOfImages() - numberOfTrainingImages;
@@ -20,7 +19,6 @@ void test::startTesting(int numberOfTrainingElements ){
 	cout << "Training neural network." << endl;
 	this->NN.trainNN(trainingData, trainingClasses);
 	cout << "Finished training neural network." << endl;
-
 	testTestData();
 }
 
@@ -28,9 +26,7 @@ void test::testTestData(){
 	for(int i=0; i< this->numberOfTestImages; ++i){
 		data currentData = this->datasets->at(i+this->numberOfTrainingImages);
 		cout << "testing number " << i <<endl;
-
 		cv::Mat result = positiveMatches(currentData);
-
 		string windowName = "Image ";
 		cv::namedWindow(windowName);
 		//cv::Mat temp = rotateImage(currentData.getImage() , currentData.angle);
@@ -38,22 +34,38 @@ void test::testTestData(){
 		cout << "cols  is " <<  result.cols << " rows " <<  result.rows<< endl;
 
 		cv::Size imageSize = currentData.imageSize();
-		cv::Mat mergeImag(imageSize.height, imageSize.width, CV_32FC3);
+		cv::Mat mergeImage(imageSize.height, imageSize.width, CV_8UC3);
+
+		cv::Mat result2(imageSize.height , imageSize.width , CV_8U);
 		for(int y=0; y<imageSize.height; ++y){
 			for(int x=0; x<imageSize.width; ++x){
 				//Vec3b color = image.at<Vec3b>(Point(x,y));
 				//mergeImag =Vec3b & color = image.at<Vec3b>(y,x);
-				mergeImag.at<cv::Vec3b>(y,x)[0] = 0;
-				mergeImag.at<cv::Vec3b>(y,x)[1] = currentData.getImage().at<float>(y,x);
-				mergeImag.at<cv::Vec3b>(y,x)[2] = 0;
+				uchar temp;
+				if(result.at<float>(y,x) >0)
+					temp  = 255;
+				else
+					temp  = 0;
+
+				mergeImage.at<cv::Vec3b>(y,x)[0] = temp;
+				mergeImage.at<cv::Vec3b>(y,x)[1] = 0;
+				mergeImage.at<cv::Vec3b>(y,x)[2] = currentData.getImage().at<uchar>(y,x);
 
 			}
 		}
-		cv::imshow(windowName + currentData.name, result);
+	//	cv::imshow(windowName + currentData.name, result);
+	//	cv::waitKey(-1);
+
+
+	//	cv::imshow(windowName + currentData.name, result2);
+	//	cv::waitKey(-1);
+
+
+		for(int j = 0; j < currentData.numberOfStomata(); ++j)
+			cv::circle(mergeImage, currentData.getCoordinate(j), maxDistance/2, CV_RGB(0, 255,0), 1);
+		cv::imshow(windowName + currentData.name, mergeImage);
 		cv::waitKey(-1);
 
-		cv::imshow(windowName + currentData.name, mergeImag);
-		cv::waitKey(-1);
 		cv::destroyWindow(windowName + currentData.name);
 	}
 }
@@ -72,23 +84,26 @@ cv::Mat test::positiveMatches(data currentData){
 	for(int y=sizeBefRot/2; y<imageSize.height-sizeBefRot/2; ++y){
 		//cout << "Point y " << y <<endl;
 		for(int x=sizeBefRot/2; x<imageSize.width-sizeBefRot/2; ++x){
-
 			cv::Point point(x,y);
-
 			cv::Mat sampleImage = getSubImage(currentData.getImage(), point, sizeBefRot);
 			sampleImage = rotateImageCropped(sampleImage, currentData.angle, cropfactor);
-
 			cv::resize(sampleImage, sampleImage, cv::Size(this->sizeOfRect/4, this->sizeOfRect/4));
-
 			cv::Mat sample(1, this->networkInputSize, CV_32FC1);
 			uchar* img_d = sampleImage.data;
+
 			for(int j = 0; j < this->networkInputSize;  ++j){
 				sample.at<float>(0,j) =  img_d[j];
+				//cout << "img_d[j] "<< img_d[j] <<  " sample.at<float>(0,j) "<< sample.at<float>(0,j) << endl;
 			}
 			cv::Mat predicted = NN.predictNN(sample);
+			//cout << "predicted.at<float>(0,0) "<< predicted.at<float>(0,0) << endl;
 
 			result.at<float>(y,x) = predicted.at<float>(0,0);
+
+			//cout << "result.at<uchar>(y,x) "<< result.at<float>(y,x) << endl;
 		}
+		//cout << "result.at<uchar>(y,x) "<< result.at<float>(y,60) << endl;
+
 	}
 	return result;
 }
@@ -99,9 +114,13 @@ cv::Mat test::positiveMatches(data currentData){
 cv::Mat test::generateTrainingData(int numberOfTrainingElements, cv::Mat& trainingClass){
 	cv::Mat trainingData(numberOfTrainingElements, this->networkInputSize, CV_32FC1);
 	for(int i=0; i< numberOfTrainingElements; ++i){
-		std::uniform_int_distribution<int> classDistribution(0,1);
 		bool foundSample = false;
+		//negative sample: -1 , positive sample (stomata found): 1
+		std::uniform_int_distribution<int> classDistribution(0,1);
 		int whichClass = classDistribution(generator);
+		if(whichClass == 0)
+			whichClass = -1;
+	//	cout << " whichClass " << whichClass << endl;
 		while(!foundSample){
 			cv::Mat sampleImage;
 			std::uniform_int_distribution<int> pictureDistribution(0,this->numberOfTrainingImages-1);
@@ -135,7 +154,7 @@ cv::Mat test::generateTrainingData(int numberOfTrainingElements, cv::Mat& traini
 
 int test::getClass(data currentData, cv::Point point){
 	//0 equals no stomata in close vicinity
-	int currentClass = 0;
+	int currentClass = -1;
 	for(int i= 0; i<currentData.numberOfStomata(); ++i){
 		cv::Point difference = point - currentData.getCoordinate(i);
 		double distance = difference.x*difference.x + difference.y*difference.y;
