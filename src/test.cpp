@@ -19,16 +19,15 @@ void test::startTesting(int numberOfTrainingElements ){
 	cout << "Training neural network." << endl;
 	this->NN.trainNN(trainingData, trainingClasses);
 	cout << "Finished training neural network." << endl;
-	testTestData();
+	testData();
 }
 
-void test::testTestData(){
+void test::testData(){
 	for(int i=0; i< this->numberOfTestImages; ++i){
 		data currentData = this->datasets->at(i+this->numberOfTrainingImages);
 		cout << "testing number " << i <<endl;
-		cv::Mat result = positiveMatches(currentData);
-		string windowName = "Image ";
-		cv::namedWindow(windowName);
+		cv::Mat result = positiveMatchesMirrored(currentData);
+
 		//cv::Mat temp = rotateImage(currentData.getImage() , currentData.angle);
 		cout << "width  is " <<  currentData.imageSize().width << " height is " <<  currentData.imageSize().height << endl;
 		cout << "cols  is " <<  result.cols << " rows " <<  result.rows<< endl;
@@ -36,7 +35,6 @@ void test::testTestData(){
 		cv::Size imageSize = currentData.imageSize();
 		cv::Mat mergeImage(imageSize.height, imageSize.width, CV_8UC3);
 
-		cv::Mat result2(imageSize.height , imageSize.width , CV_8U);
 		for(int y=0; y<imageSize.height; ++y){
 			for(int x=0; x<imageSize.width; ++x){
 				//Vec3b color = image.at<Vec3b>(Point(x,y));
@@ -53,14 +51,8 @@ void test::testTestData(){
 
 			}
 		}
-	//	cv::imshow(windowName + currentData.name, result);
-	//	cv::waitKey(-1);
-
-
-	//	cv::imshow(windowName + currentData.name, result2);
-	//	cv::waitKey(-1);
-
-
+		string windowName = "Image ";
+		cv::namedWindow(windowName+ currentData.name);
 		for(int j = 0; j < currentData.numberOfStomata(); ++j)
 			cv::circle(mergeImage, currentData.getCoordinate(j), maxDistance/2, CV_RGB(0, 255,0), 1);
 		cv::imshow(windowName + currentData.name, mergeImage);
@@ -73,11 +65,16 @@ void test::testTestData(){
 cv::Mat test::positiveMatches(data currentData){
 	cv::Size imageSize = currentData.imageSize();
     cv::Mat result(imageSize.height, imageSize.width, CV_32F);
+	for(int y=0; y<imageSize.height; ++y){
+		for(int x=0; x<imageSize.width; ++x){
+			result.at<float>(y,x) =0;
+		}
+	}
 	double angleInRad = M_PI / 180.0 * currentData.angle;
 	double cropfactor = abs(cos(angleInRad)) + abs(sin(angleInRad));
 	//get the size to crop a picture of desired size after rotation.
 	int sizeBefRot 	= ceil(sizeOfRect*cropfactor);
-		//Assert even number
+	//Assert even number
 	if((sizeBefRot % 2)	!= 0)
 		++sizeBefRot ;
 	//cout << "cropfactor " << cropfactor <<endl;
@@ -90,24 +87,45 @@ cv::Mat test::positiveMatches(data currentData){
 			cv::resize(sampleImage, sampleImage, cv::Size(this->sizeOfRect/4, this->sizeOfRect/4));
 			cv::Mat sample(1, this->networkInputSize, CV_32FC1);
 			uchar* img_d = sampleImage.data;
-
 			for(int j = 0; j < this->networkInputSize;  ++j){
 				sample.at<float>(0,j) =  img_d[j];
-				//cout << "img_d[j] "<< img_d[j] <<  " sample.at<float>(0,j) "<< sample.at<float>(0,j) << endl;
 			}
 			cv::Mat predicted = NN.predictNN(sample);
-			//cout << "predicted.at<float>(0,0) "<< predicted.at<float>(0,0) << endl;
-
 			result.at<float>(y,x) = predicted.at<float>(0,0);
-
-			//cout << "result.at<uchar>(y,x) "<< result.at<float>(y,x) << endl;
-		}
-		//cout << "result.at<uchar>(y,x) "<< result.at<float>(y,60) << endl;
-
+			}
 	}
 	return result;
 }
 
+//Tests all the pixels, mirrors partially the original picture, if parts of the subImage (which is taken as sample) lie outside the original picture
+cv::Mat test::positiveMatchesMirrored(data currentData){
+	cv::Size imageSize = currentData.imageSize();
+    cv::Mat result(imageSize.height, imageSize.width, CV_32F);
+
+	double angleInRad = M_PI / 180.0 * currentData.angle;
+	double cropfactor = abs(cos(angleInRad)) + abs(sin(angleInRad));
+	//get the size to crop a picture of desired size after rotation.
+	int sizeBefRot 	= ceil(sizeOfRect*cropfactor);
+	//Assert even number
+	if((sizeBefRot % 2)	!= 0)
+		++sizeBefRot ;
+	for(int y=0; y<imageSize.height; ++y){
+		for(int x=0; x<imageSize.width; ++x){
+			cv::Point point(x,y);
+			cv::Mat sampleImage = getSubImageMirrored(currentData.getImage(), point, sizeBefRot);
+			sampleImage = rotateImageCropped(sampleImage, currentData.angle, cropfactor);
+			cv::resize(sampleImage, sampleImage, cv::Size(this->sizeOfRect/4, this->sizeOfRect/4));
+			cv::Mat sample(1, this->networkInputSize, CV_32FC1);
+			uchar* img_d = sampleImage.data;
+			for(int j = 0; j < this->networkInputSize;  ++j){
+				sample.at<float>(0,j) =  img_d[j];
+			}
+			cv::Mat predicted = NN.predictNN(sample);
+			result.at<float>(y,x) = predicted.at<float>(0,0);
+			}
+	}
+	return result;
+}
 /* Idea: generate with a probability of 0.5 a positive or negative trainingsdata.
  * For that, get a random trainingspicture and sample random elments, until a match in regard of the class is found.
  */
@@ -166,13 +184,47 @@ int test::getClass(data currentData, cv::Point point){
 	return currentClass;
 }
 
-cv::Mat test::getSubImage(cv::Mat imag, cv::Point center, int size){
+cv::Mat test::getSubImage(cv::Mat image, cv::Point center, int size){
 	cv::Rect rect(center - cv::Point(size/2, size/2),  center + cv::Point(size/2, size/2));
-	cv::Mat temp= imag(rect);
-	//cout << "temp.rows " << temp.rows <<  " size " << size <<endl;
+	cv::Mat temp= image(rect);
 	assert (temp.rows  == size);
 	return temp;
 }
+
+cv::Mat test::getSubImageMirrored(cv::Mat image, cv::Point center, int size){
+	cv::Point leftUp = center - cv::Point(size/2, size/2);
+	cv::Point rightDown = center + cv::Point(size/2, size/2);
+
+	if((leftUp.x > 0 )&& (leftUp.y > 0 )&& (rightDown.x < image.cols )&& (rightDown.y < image.rows))
+		return getSubImage(image, center, size);
+
+	cv::Mat imageTemp;
+	cv::copyMakeBorder(image,imageTemp, size,size,size,size, cv::BORDER_REFLECT_101);
+	cv::Rect rect(leftUp + cv::Point(size, size) ,  rightDown + cv::Point(size , size));
+
+	cv::Mat result= imageTemp(rect);
+
+/*
+	string windowName = "Image ";
+	cv::namedWindow(windowName);
+
+
+	cv::imshow(windowName, image);
+	cv::waitKey(-1);
+
+	cv::imshow(windowName, imageTemp);
+	cv::waitKey(-1);
+
+	cv::imshow(windowName, result);
+	cv::waitKey(-1);
+	cv::destroyWindow(windowName);
+*/
+
+
+	assert (result.rows  == size);
+	return result;
+}
+
 
 cv::Mat test::rotateImage(cv::Mat image,  double angle){
 	cv::Point center(image.cols/2.0, image.rows/2.0);

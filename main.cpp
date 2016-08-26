@@ -117,7 +117,7 @@ std::vector<data> getData(){
 
 int main(void){
 	std::vector<data> datasets = getData();
-	test testInstance = test(&datasets, 1000);
+	test testInstance = test(&datasets, 160);
 //	showStomata(datasets[0]);
 /*
 	for(int i=0; i<datasets.size(); ++i){
@@ -134,7 +134,7 @@ int main(void){
 		cv::destroyWindow(windowName + datasets[i].name);
 	}
 	*/
-	testInstance.startTesting(100);
+	testInstance.startTesting(500);
 	return EXIT_SUCCESS;
 }
 
