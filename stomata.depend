@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1472139115 source:/home/alex/projects/stomata/main.cpp
+1472225689 source:/home/alex/projects/stomata/main.cpp
 	<iostream>
 	<fstream>
 	<sstream>
@@ -10,7 +10,7 @@
 	"data.h"
 	"test.h"
 
-1471868608 /home/alex/projects/stomata/include/data.h
+1472465953 /home/alex/projects/stomata/include/data.h
 	<iostream>
 	"opencv2/opencv.hpp"
 	"rotation.h"
@@ -18,28 +18,36 @@
 1471868548 source:/home/alex/projects/stomata/src/data.cpp
 	"data.h"
 
-1472210804 /home/alex/projects/stomata/include/test.h
+1472466119 /home/alex/projects/stomata/include/test.h
 	<iostream>
 	<random>
 	<assert.h>
 	"data.h"
+	"rotation.h"
 	"neuralNetwork.h"
 
-1472211530 source:/home/alex/projects/stomata/src/test.cpp
+1472466344 source:/home/alex/projects/stomata/src/test.cpp
 	"test.h"
 
 1471894770 /home/alex/projects/stomata/include/neuralNetwork.h
 	<iostream>
 	"opencv2/opencv.hpp"
 
-1472134484 source:/home/alex/projects/stomata/src/neuralNetwork.cpp
+1472225515 source:/home/alex/projects/stomata/src/neuralNetwork.cpp
 	"neuralNetwork.h"
 
-1471857262 /home/alex/projects/stomata/include/rotation.h
-	"opencv2/opencv.hpp"
+1472466284 /home/alex/projects/stomata/include/rotation.h
 	<math.h>
 	<iostream>
+	"opencv2/opencv.hpp"
+	"data.h"
 
-1471895578 source:/home/alex/projects/stomata/src/rotation.cpp
+1472466136 source:/home/alex/projects/stomata/src/rotation.cpp
 	"rotation.h"
+
+1472463046 source:/home/alex/projects/stomata/src/NNinputSample.cpp
+	"NNinputSample.h"
+
+1472463864 /home/alex/projects/stomata/include/NNinputSample.h
+	"opencv2/opencv.hpp"
 

@@ -4,7 +4,7 @@ test::test(std::vector<data> *datasets, int numberOfTrainingImages){
 	this->numberOfTrainingImages = numberOfTrainingImages;
 	numberOfTestImages = this->getNumberOfImages() - numberOfTrainingImages;
 	assert (numberOfTestImages > 0);
-	//SubImages have size 64x64
+	///SubImages have size 64x64
 	this->sizeOfRect = 64;
 }
 
@@ -27,14 +27,12 @@ void test::testData(){
 		data currentData = this->datasets->at(i+this->numberOfTrainingImages);
 		cout << "testing number " << i <<endl;
 		cv::Mat result = positiveMatchesMirrored(currentData);
-
 		//cv::Mat temp = rotateImage(currentData.getImage() , currentData.angle);
-		cout << "width  is " <<  currentData.imageSize().width << " height is " <<  currentData.imageSize().height << endl;
-		cout << "cols  is " <<  result.cols << " rows " <<  result.rows<< endl;
+		//cout << "width  is " <<  currentData.imageSize().width << " height is " <<  currentData.imageSize().height << endl;
+		//cout << "cols  is " <<  result.cols << " rows " <<  result.rows<< endl;
 
 		cv::Size imageSize = currentData.imageSize();
 		cv::Mat mergeImage(imageSize.height, imageSize.width, CV_8UC3);
-
 		for(int y=0; y<imageSize.height; ++y){
 			for(int x=0; x<imageSize.width; ++x){
 				//Vec3b color = image.at<Vec3b>(Point(x,y));
@@ -44,7 +42,6 @@ void test::testData(){
 					temp  = 255;
 				else
 					temp  = 0;
-
 				mergeImage.at<cv::Vec3b>(y,x)[0] = temp;
 				mergeImage.at<cv::Vec3b>(y,x)[1] = 0;
 				mergeImage.at<cv::Vec3b>(y,x)[2] = currentData.getImage().at<uchar>(y,x);
@@ -82,8 +79,8 @@ cv::Mat test::positiveMatches(data currentData){
 		//cout << "Point y " << y <<endl;
 		for(int x=sizeBefRot/2; x<imageSize.width-sizeBefRot/2; ++x){
 			cv::Point point(x,y);
-			cv::Mat sampleImage = getSubImage(currentData.getImage(), point, sizeBefRot);
-			sampleImage = rotateImageCropped(sampleImage, currentData.angle, cropfactor);
+			cv::Mat sampleImage = rotation::getSubImage(currentData.getImage(), point, sizeBefRot);
+			sampleImage = rotation::rotateImageCropped(sampleImage, currentData.angle, cropfactor, this->sizeOfRect);
 			cv::resize(sampleImage, sampleImage, cv::Size(this->sizeOfRect/4, this->sizeOfRect/4));
 			cv::Mat sample(1, this->networkInputSize, CV_32FC1);
 			uchar* img_d = sampleImage.data;
@@ -112,8 +109,8 @@ cv::Mat test::positiveMatchesMirrored(data currentData){
 	for(int y=0; y<imageSize.height; ++y){
 		for(int x=0; x<imageSize.width; ++x){
 			cv::Point point(x,y);
-			cv::Mat sampleImage = getSubImageMirrored(currentData.getImage(), point, sizeBefRot);
-			sampleImage = rotateImageCropped(sampleImage, currentData.angle, cropfactor);
+			cv::Mat sampleImage = rotation::getSubImageMirrored(currentData.getImage(), point, sizeBefRot);
+			sampleImage = rotation::rotateImageCropped(sampleImage, currentData.angle, cropfactor, this->sizeOfRect);
 			cv::resize(sampleImage, sampleImage, cv::Size(this->sizeOfRect/4, this->sizeOfRect/4));
 			cv::Mat sample(1, this->networkInputSize, CV_32FC1);
 			uchar* img_d = sampleImage.data;
@@ -170,80 +167,6 @@ cv::Mat test::generateTrainingData(int numberOfTrainingElements, cv::Mat& traini
 	return trainingData;
 }
 
-int test::getClass(data currentData, cv::Point point){
-	//0 equals no stomata in close vicinity
-	int currentClass = -1;
-	for(int i= 0; i<currentData.numberOfStomata(); ++i){
-		cv::Point difference = point - currentData.getCoordinate(i);
-		double distance = difference.x*difference.x + difference.y*difference.y;
-		if (distance<= maxDistance*maxDistance){
-		currentClass = 1;
-			break;
-		}
-	}
-	return currentClass;
-}
-
-cv::Mat test::getSubImage(cv::Mat image, cv::Point center, int size){
-	cv::Rect rect(center - cv::Point(size/2, size/2),  center + cv::Point(size/2, size/2));
-	cv::Mat temp= image(rect);
-	assert (temp.rows  == size);
-	return temp;
-}
-
-cv::Mat test::getSubImageMirrored(cv::Mat image, cv::Point center, int size){
-	cv::Point leftUp = center - cv::Point(size/2, size/2);
-	cv::Point rightDown = center + cv::Point(size/2, size/2);
-
-	if((leftUp.x > 0 )&& (leftUp.y > 0 )&& (rightDown.x < image.cols )&& (rightDown.y < image.rows))
-		return getSubImage(image, center, size);
-
-	cv::Mat imageTemp;
-	cv::copyMakeBorder(image,imageTemp, size,size,size,size, cv::BORDER_REFLECT_101);
-	cv::Rect rect(leftUp + cv::Point(size, size) ,  rightDown + cv::Point(size , size));
-
-	cv::Mat result= imageTemp(rect);
-
-/*
-	string windowName = "Image ";
-	cv::namedWindow(windowName);
-
-
-	cv::imshow(windowName, image);
-	cv::waitKey(-1);
-
-	cv::imshow(windowName, imageTemp);
-	cv::waitKey(-1);
-
-	cv::imshow(windowName, result);
-	cv::waitKey(-1);
-	cv::destroyWindow(windowName);
-*/
-
-
-	assert (result.rows  == size);
-	return result;
-}
-
-
-cv::Mat test::rotateImage(cv::Mat image,  double angle){
-	cv::Point center(image.cols/2.0, image.rows/2.0);
-	cv::Mat rotImage;
-	cv::Mat rot = cv::getRotationMatrix2D(center, angle, 1.0);
-	cv::warpAffine(image, rotImage, rot , image.size());
-	return rotImage;
-}
-
-cv::Mat test::rotateImageCropped(cv::Mat image,  double angle, double cropfactor){
-	//cout << "cropfactor " << cropfactor << endl;
-	cv::Point center(image.cols/2.0, image.rows/2.0);
-	cv::Mat rotImage = rotateImage(image, angle);
-	//return cropped image
-	int newSize =rotImage.cols/cropfactor;
-	assert (newSize >= sizeOfRect && newSize <= sizeOfRect+1 );
-	return getSubImage(rotImage, center, sizeOfRect);
-}
-
 cv::Mat test::getRotatedImage(data currentData, int whichClass){
 	double angleInRad = M_PI / 180.0 * currentData.angle;
 	double cropfactor = abs(cos(angleInRad)) + abs(sin(angleInRad));
@@ -260,13 +183,34 @@ cv::Mat test::getRotatedImage(data currentData, int whichClass){
 	int y = yDistribution(generator);
 	cv::Point point(x,y);
 	assert (proofsize == sizeOfRect);
-	cv::Mat subImag = getSubImage(currentData.getImage(), point, sizeBefRot);
-	subImag = rotateImageCropped(subImag, currentData.angle, cropfactor);
+	cv::Mat subImag = rotation::getSubImage(currentData.getImage(), point, sizeBefRot);
+	subImag = rotation::rotateImageCropped(subImag, currentData.angle, cropfactor, this->sizeOfRect);
 	assert (subImag.rows == sizeOfRect && subImag.cols == sizeOfRect );
 	if(getClass(currentData, point) != whichClass)
 		throw 0;
 	return subImag;
 }
+
+
+
+
+int test::getClass(data currentData, cv::Point point){
+	//0 equals no stomata in close vicinity
+	int currentClass = -1;
+	for(int i= 0; i<currentData.numberOfStomata(); ++i){
+		cv::Point difference = point - currentData.getCoordinate(i);
+		double distance = difference.x*difference.x + difference.y*difference.y;
+		if (distance<= maxDistance*maxDistance){
+		currentClass = 1;
+			break;
+		}
+	}
+	return currentClass;
+}
+
+
+
+
 
 int test::getNumberOfImages(){
 	return datasets->size();

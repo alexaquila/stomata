@@ -9,7 +9,6 @@ rotation::~rotation()
 {
 	//dtor
 }
-
 //Better idea: find a quadratic rectangle, which can be completely rotated in the middle of image
 //Calculate postlrating for that, makes also rotations over 45^degrees comparable
 double rotation::findRotAngle(cv::Mat image){
@@ -66,6 +65,63 @@ double rotation::calculatePostlRating(double *sumColumns, int numberCols){
 	//std::cout << "postl " << sum << std::endl;
 	return sum;
 }
+
+cv::Mat rotation::rotateImage(cv::Mat image,  double angle){
+	cv::Point center(image.cols/2.0, image.rows/2.0);
+	cv::Mat rotImage;
+	cv::Mat rot = cv::getRotationMatrix2D(center, angle, 1.0);
+	cv::warpAffine(image, rotImage, rot , image.size());
+	return rotImage;
+}
+
+cv::Mat rotation::rotateImageCropped(cv::Mat image,  double angle, double cropfactor, int sizeOfRect){
+	//cout << "cropfactor " << cropfactor << endl;
+	cv::Point center(image.cols/2.0, image.rows/2.0);
+	cv::Mat rotImage = rotateImage(image, angle);
+	//return cropped image
+	int newSize =rotImage.cols/cropfactor;
+	assert (newSize >= sizeOfRect && newSize <= sizeOfRect+1 );
+	return getSubImage(rotImage, center, sizeOfRect);
+}
+
+
+
+cv::Mat rotation::getSubImage(cv::Mat image, cv::Point center, int size){
+	cv::Rect rect(center - cv::Point(size/2, size/2),  center + cv::Point(size/2, size/2));
+	cv::Mat temp= image(rect);
+	assert (temp.rows  == size);
+	return temp;
+}
+
+cv::Mat rotation::getSubImageMirrored(cv::Mat image, cv::Point center, int size){
+	cv::Point leftUp = center - cv::Point(size/2, size/2);
+	cv::Point rightDown = center + cv::Point(size/2, size/2);
+
+	if((leftUp.x > 0 )&& (leftUp.y > 0 )&& (rightDown.x < image.cols )&& (rightDown.y < image.rows))
+		return getSubImage(image, center, size);
+
+	cv::Mat imageTemp;
+	cv::copyMakeBorder(image,imageTemp, size,size,size,size, cv::BORDER_REFLECT_101);
+	cv::Rect rect(leftUp + cv::Point(size, size) ,  rightDown + cv::Point(size , size));
+	cv::Mat result= imageTemp(rect);
+/*
+	string windowName = "Image ";
+	cv::namedWindow(windowName);
+
+	cv::imshow(windowName, image);
+	cv::waitKey(-1);
+
+	cv::imshow(windowName, imageTemp);
+	cv::waitKey(-1);
+
+	cv::imshow(windowName, result);
+	cv::waitKey(-1);
+	cv::destroyWindow(windowName);
+*/
+	assert (result.rows  == size);
+	return result;
+}
+
 
 /*
 void rotation::rotateAroundCenter(int& out_r, int& out_c,

@@ -28,12 +28,12 @@ void setRotationAngle(data * data,  string currentLocation){
 	//Look, if rotation has already been calculated and stored in data/locations/
 	ifstream location(currentLocation);
 	if (location.is_open()){
-		cout << "Previous calulation of rotation-angle found."<< endl;
+	//	cout << "Previous calulation of rotation-angle found."<< endl;
 
 		std::string line;
 		std::getline(location, line);
 		std::stringstream iss(line);
-		cout << line << endl;
+	//	cout << line << endl;
 		double x = 0;
 		if (!(iss >> data->angle)){
 			cout << " oh no, no parsing "<< endl;
@@ -111,30 +111,15 @@ std::vector<data> getData(){
 			}
 		}
 	}
+	cout << datasets.size() << " images with corresponding stomata coordinates found." << endl;
 	return datasets;
 }
 
 
 int main(void){
 	std::vector<data> datasets = getData();
-	test testInstance = test(&datasets, 160);
-//	showStomata(datasets[0]);
-/*
-	for(int i=0; i<datasets.size(); ++i){
-		string windowName = "Image ";
-		cv::namedWindow(windowName);
-		cv::Mat image = datasets[i].getImage();
-		cv::Point center(image.cols/2.0, image.rows/2.0);
-		cv::Mat rot = cv::getRotationMatrix2D(center, datasets[i].angle, 1.0);
-		cv::warpAffine(image, image, rot , image.size());
-		for(int j = 0; j < datasets[i].numberOfStomata(); ++j)
-			cv::circle(image, datasets[i].getCoordinate(j), 20, CV_RGB(255,255,255),10);
-		cv::imshow(windowName + datasets[i].name, image);
-		cv::waitKey(-1);
-		cv::destroyWindow(windowName + datasets[i].name);
-	}
-	*/
-	testInstance.startTesting(500);
+	test testInstance = test(&datasets, 240);
+	testInstance.startTesting(10000);
 	return EXIT_SUCCESS;
 }
 

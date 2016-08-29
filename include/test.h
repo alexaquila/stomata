@@ -5,6 +5,7 @@
 #include <random>
 #include <assert.h>
 #include "data.h"
+#include "rotation.h"
 #include "neuralNetwork.h"
 
 class test{
@@ -27,11 +28,7 @@ class test{
 		std::vector<data> *datasets;
 		//The maximal distance in pixel from the sample point to the ground-truth data, in which vicinity the sample count as stomata-class
 		int maxDistance = 15;
-		cv::Mat getSubImage(cv::Mat imag, cv::Point center, int size);
-		cv::Mat getSubImageMirrored(cv::Mat imag, cv::Point center, int size);
 
-		cv::Mat rotateImageCropped(cv::Mat image,  double angle, double cropfactor);
-		cv::Mat rotateImage(cv::Mat image, double angle);
 		cv::Mat getRotatedImage(data currentData, int whichClass);
 
 		cv::Mat positiveMatches(data currentData);
