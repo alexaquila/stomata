@@ -2,7 +2,7 @@
 #include <fstream>
 #include <sstream>
 
-#include <string>
+//#include <string>
 #include <cmath>
 #include <random>
 #include <dirent.h>
@@ -92,7 +92,6 @@ std::vector<data> getData(){
 
 				setRotationAngle(&currentData,  rotationPath + entry->d_name + ".rot");
 				//showStomata(currentData);
-
 /*
 				string windowName = "Image ";
 				cv::namedWindow(windowName);
@@ -118,8 +117,8 @@ std::vector<data> getData(){
 
 int main(void){
 	std::vector<data> datasets = getData();
-	test testInstance = test(&datasets, 240);
-	testInstance.startTesting(10000);
+	test testInstance = test(&datasets, 240, 10000);
+	testInstance.startTesting();
 	return EXIT_SUCCESS;
 }
 

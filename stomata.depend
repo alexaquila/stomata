@@ -1,9 +1,8 @@
 # depslib dependency file v1.0
-1472225689 source:/home/alex/projects/stomata/main.cpp
+1472486894 source:/home/alex/projects/stomata/main.cpp
 	<iostream>
 	<fstream>
 	<sstream>
-	<string>
 	<cmath>
 	<random>
 	<dirent.h>
@@ -18,36 +17,49 @@
 1471868548 source:/home/alex/projects/stomata/src/data.cpp
 	"data.h"
 
-1472466119 /home/alex/projects/stomata/include/test.h
+1472489137 /home/alex/projects/stomata/include/test.h
 	<iostream>
 	<random>
 	<assert.h>
 	"data.h"
 	"rotation.h"
 	"neuralNetwork.h"
+	"NNinputSample.h"
+	"NNinputSampleQuarter.h"
 
-1472466344 source:/home/alex/projects/stomata/src/test.cpp
+1472489250 source:/home/alex/projects/stomata/src/test.cpp
 	"test.h"
 
 1471894770 /home/alex/projects/stomata/include/neuralNetwork.h
 	<iostream>
 	"opencv2/opencv.hpp"
 
-1472225515 source:/home/alex/projects/stomata/src/neuralNetwork.cpp
+1472484672 source:/home/alex/projects/stomata/src/neuralNetwork.cpp
 	"neuralNetwork.h"
 
-1472466284 /home/alex/projects/stomata/include/rotation.h
+1472466405 /home/alex/projects/stomata/include/rotation.h
 	<math.h>
 	<iostream>
 	"opencv2/opencv.hpp"
-	"data.h"
 
 1472466136 source:/home/alex/projects/stomata/src/rotation.cpp
 	"rotation.h"
 
-1472463046 source:/home/alex/projects/stomata/src/NNinputSample.cpp
+1472486676 source:/home/alex/projects/stomata/src/NNinputSample.cpp
 	"NNinputSample.h"
 
-1472463864 /home/alex/projects/stomata/include/NNinputSample.h
+1472486641 /home/alex/projects/stomata/include/NNinputSample.h
 	"opencv2/opencv.hpp"
+
+1472480096 source:/home/alex/projects/stomata/src/NNinputSamplePCA.cpp
+	"NNinputSamplePCA.h"
+
+1472480202 /home/alex/projects/stomata/include/NNinputSamplePCA.h
+	<NNinputSample.h>
+
+1472486770 source:/home/alex/projects/stomata/src/NNinputSampleQuarter.cpp
+	"NNinputSampleQuarter.h"
+
+1472486129 /home/alex/projects/stomata/include/NNinputSampleQuarter.h
+	<NNinputSample.h>
 

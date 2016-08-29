@@ -7,21 +7,22 @@
 #include "data.h"
 #include "rotation.h"
 #include "neuralNetwork.h"
-
+#include "NNinputSample.h"
+#include "NNinputSampleQuarter.h"
 class test{
 	public:
 		int numberOfTestImages;
 		int numberOfTrainingImages= 10;
-		test(std::vector<data> *datasets, int numberOfTrainingImages);
+		test(std::vector<data> *datasets, int numberOfTrainingImagesint, int  numberOfTrainingElements);
 		virtual ~test();
 
-		void startTesting(int numberOfTrainingElements);
+		void startTesting();
 		int getNumberOfImages();
-		cv::Mat generateTrainingData(int numberOfTrainingElements, cv::Mat& testClass);
+		void generateTrainingData();
 
 	protected:
 	private:
-		int networkInputSize = 256;
+		//int networkInputSize = 256;
 		int sizeOfRect;
 		std::default_random_engine generator;
 		neuralNetwork NN;
@@ -35,5 +36,9 @@ class test{
 		cv::Mat positiveMatchesMirrored(data currentData);
 		int getClass(data currentData, cv::Point point);
 		void testData();
+		NNinputSample * inputFeatures;
+
+
+		int numberOfTrainingElements;
 };
 #endif // TEST_H

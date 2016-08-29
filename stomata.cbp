@@ -48,12 +48,16 @@
 			<Add library="/usr/lib/x86_64-linux-gnu/libopencv_ml.so" />
 		</Linker>
 		<Unit filename="include/NNinputSample.h" />
+		<Unit filename="include/NNinputSamplePCA.h" />
+		<Unit filename="include/NNinputSampleQuarter.h" />
 		<Unit filename="include/data.h" />
 		<Unit filename="include/neuralNetwork.h" />
 		<Unit filename="include/rotation.h" />
 		<Unit filename="include/test.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/NNinputSample.cpp" />
+		<Unit filename="src/NNinputSamplePCA.cpp" />
+		<Unit filename="src/NNinputSampleQuarter.cpp" />
 		<Unit filename="src/data.cpp" />
 		<Unit filename="src/neuralNetwork.cpp" />
 		<Unit filename="src/rotation.cpp" />

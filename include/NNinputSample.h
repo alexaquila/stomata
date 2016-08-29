@@ -6,14 +6,26 @@
  *  First: Principle Component Analysis
  *  Secon: Fisher linear dicriminant
  */
-class NNinputSample
-{
+class NNinputSample{
 	public:
-		NNinputSample(cv::Mat image);
+		NNinputSample(unsigned int numberOfTrainingElements, cv::Size imageSize);
 		virtual ~NNinputSample();
+		cv::Mat  getTransformedSamples();
+		cv::Mat  getClasses();
+		virtual void addSample(cv::Mat image, int whichClass);
+
+		virtual cv::Mat transformInput(cv::Mat image);
+
+		int getNetworkInputSize();
 	protected:
+		cv::Mat trainingData;
+		cv::Mat trainingClasses;
+		cv::Size imageSize;
+		unsigned int networkInputSize;
+		unsigned int currentImageIndex = 0;
+
 	private:
-		cv::Mat image;
+
 };
 
 #endif // NNINPUTSAMPLE_H
