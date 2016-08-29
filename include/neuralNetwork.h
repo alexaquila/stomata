@@ -7,13 +7,13 @@
 class neuralNetwork
 {
 	public:
-		neuralNetwork();
+		neuralNetwork(int inputSize);
 		virtual ~neuralNetwork();
 		void trainNN(cv::Mat& trainingData, cv::Mat& trainingClasses);
 		cv::Mat predictNN(cv::Mat sample);
 	protected:
 	private:
-		void setNNparams();
+		void setNNparams(int inputSize);
 		int numberOfLayers();
 		std::vector<int> layerSizes;
 		int inputSize = 256;

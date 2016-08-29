@@ -8,6 +8,7 @@ test::test(std::vector<data> *datasets, int numberOfTrainingImages, int numberOf
 	this->sizeOfRect = 64;
 	this->inputFeatures = new NNinputSampleQuarter(numberOfTrainingElements, cv::Size(this->sizeOfRect, this->sizeOfRect));
 	this->numberOfTrainingElements = numberOfTrainingElements;
+	this->NN = new neuralNetwork(this->inputFeatures->getNetworkInputSize());
 }
 
 test::~test(){
@@ -21,7 +22,7 @@ void test::startTesting( ){
 	cv::Mat trainingClasses = this->inputFeatures->getClasses();
 	cv::Mat trainingData = this->inputFeatures->getTransformedSamples();
 	cout << "Training neural network." << endl;
-	this->NN.trainNN(trainingData, trainingClasses);
+	this->NN->trainNN(trainingData, trainingClasses);
 	cout << "Finished training neural network." << endl;
 	testData();
 }
@@ -78,7 +79,7 @@ cv::Mat test::positiveMatchesMirrored(data currentData){
 			for(int j = 0; j < this->inputFeatures->getNetworkInputSize();  ++j){
 				sample.at<float>(0,j) =  img_d[j];
 			}
-			cv::Mat predicted = NN.predictNN(sample);
+			cv::Mat predicted = NN->predictNN(sample);
 			result.at<float>(y,x) = predicted.at<float>(0,0);
 			}
 	}
@@ -110,6 +111,7 @@ void test::generateTrainingData(){
 				// cout << "wrong class found "<< whichClass<<endl;
 				continue;
 			}
+			cv::normalize(sampleImage, sampleImage, 0, 255, cv::NORM_MINMAX, CV_8UC1);
 			this->inputFeatures->addSample(sampleImage, whichClass);
 			foundSample =true;
 		}

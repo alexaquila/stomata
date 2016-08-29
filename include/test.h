@@ -25,10 +25,10 @@ class test{
 		//int networkInputSize = 256;
 		int sizeOfRect;
 		std::default_random_engine generator;
-		neuralNetwork NN;
+		neuralNetwork* NN;
 		std::vector<data> *datasets;
 		//The maximal distance in pixel from the sample point to the ground-truth data, in which vicinity the sample count as stomata-class
-		int maxDistance = 15;
+		int maxDistance = 5;
 
 		cv::Mat getRotatedImage(data currentData, int whichClass);
 

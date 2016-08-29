@@ -117,7 +117,7 @@ std::vector<data> getData(){
 
 int main(void){
 	std::vector<data> datasets = getData();
-	test testInstance = test(&datasets, 240, 10000);
+	test testInstance = test(&datasets, 240, 2000);
 	testInstance.startTesting();
 	return EXIT_SUCCESS;
 }

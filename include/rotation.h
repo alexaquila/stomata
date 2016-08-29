@@ -24,7 +24,6 @@ class rotation{
 		static cv::Mat getSubImage(cv::Mat imag, cv::Point center, int size);
 		static cv::Mat getSubImageMirrored(cv::Mat imag, cv::Point center, int size);
 
-
 	protected:
 	private:
 };

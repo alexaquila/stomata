@@ -1,5 +1,6 @@
 #include "neuralNetwork.h"
-void neuralNetwork::setNNparams(){
+void neuralNetwork::setNNparams(int inputSize){
+	this->inputSize = inputSize;
 	layerSizes.push_back(inputSize);
 	layerSizes.push_back(50);
 	layerSizes.push_back(50);
@@ -18,15 +19,15 @@ void neuralNetwork::setNNparams(){
     this->params.term_crit = criteria;
 
 	cv::Mat layers = cv::Mat(numberOfLayers(), 1, CV_32SC1);
-	for(unsigned int i = 0; i<numberOfLayers(); ++i){
+	for(int i = 0; i<numberOfLayers(); ++i){
 		std::cout << layerSizes[i] << std::endl;
 		layers.row(i) = cv::Scalar(layerSizes[i]);
 	}
 	this->mlp.create(layers);
 
 }
-neuralNetwork::neuralNetwork(){
-	setNNparams();
+neuralNetwork::neuralNetwork(int inputSize){
+	setNNparams(inputSize);
 
 }
 
