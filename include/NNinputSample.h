@@ -8,9 +8,9 @@
  */
 class NNinputSample{
 	public:
-		NNinputSample(unsigned int numberOfTrainingElements, cv::Size imageSize);
+		NNinputSample(int numberOfTrainingElements, cv::Size imageSize);
 		virtual ~NNinputSample();
-		cv::Mat  getTransformedSamples();
+		virtual cv::Mat  getTransformedSamples();
 		cv::Mat  getClasses();
 		virtual void addSample(cv::Mat image, int whichClass);
 
@@ -21,9 +21,10 @@ class NNinputSample{
 		cv::Mat trainingData;
 		cv::Mat trainingClasses;
 		cv::Size imageSize;
-		unsigned int networkInputSize;
-		unsigned int currentImageIndex = 0;
-
+		int networkInputSize;
+		int currentImageIndex = 0;
+		int getNumberOfTrainingElements();
+			int numberOfTrainingElements;
 	private:
 
 };

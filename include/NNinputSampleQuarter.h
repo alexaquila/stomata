@@ -8,12 +8,13 @@
 class NNinputSampleQuarter : public NNinputSample
 {
 	public:
-		NNinputSampleQuarter(unsigned int numberOfTrainingElements, cv::Size  imageSize);
+		NNinputSampleQuarter(int numberOfTrainingElements, cv::Size  imageSize);
 		virtual ~NNinputSampleQuarter();
 		void addSample(cv::Mat image, int whichClass);
 		cv::Mat transformInput(cv::Mat image);
 	protected:
 	private:
+
 };
 
 #endif // NNINPUTSAMPLEQUARTER_H

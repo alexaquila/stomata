@@ -9,10 +9,12 @@
 #include "neuralNetwork.h"
 #include "NNinputSample.h"
 #include "NNinputSampleQuarter.h"
+#include "NNinputSamplePCA.h"
+
 class test{
 	public:
 		int numberOfTestImages;
-		int numberOfTrainingImages= 10;
+		int numberOfTrainingImages;
 		test(std::vector<data> *datasets, int numberOfTrainingImagesint, int  numberOfTrainingElements);
 		virtual ~test();
 
@@ -28,9 +30,9 @@ class test{
 		neuralNetwork* NN;
 		std::vector<data> *datasets;
 		//The maximal distance in pixel from the sample point to the ground-truth data, in which vicinity the sample count as stomata-class
-		int maxDistance = 5;
+		int maxDistance = 7;
 
-		cv::Mat getRotatedImage(data currentData, int whichClass);
+		cv::Mat getRandomRotatedImage(data currentData, int whichClass);
 
 		cv::Mat positiveMatches(data currentData);
 		cv::Mat positiveMatchesMirrored(data currentData);
@@ -40,5 +42,9 @@ class test{
 
 
 		int numberOfTrainingElements;
+
+
+		int currentTrainingImage = 0;
+		int currentTrainingStomata =0;
 };
 #endif // TEST_H

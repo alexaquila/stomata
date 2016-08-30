@@ -84,8 +84,6 @@ cv::Mat rotation::rotateImageCropped(cv::Mat image,  double angle, double cropfa
 	return getSubImage(rotImage, center, sizeOfRect);
 }
 
-
-
 cv::Mat rotation::getSubImage(cv::Mat image, cv::Point center, int size){
 	cv::Rect rect(center - cv::Point(size/2, size/2),  center + cv::Point(size/2, size/2));
 	cv::Mat temp= image(rect);

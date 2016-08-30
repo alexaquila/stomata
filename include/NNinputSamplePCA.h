@@ -9,12 +9,17 @@
  */
 class NNinputSamplePCA : public NNinputSample{
 	public:
-		NNinputSamplePCA(unsigned int numberOfTrainingElements, cv::Size imageSize);
+		NNinputSamplePCA(int numberOfTrainingElements, cv::Size imageSize);
 		virtual ~NNinputSamplePCA();
 		void addSample(cv::Mat image, int whichClass);
 		cv::Mat transformInput(cv::Mat image);
+		cv::Mat getTransformedSamples();
 	protected:
+		cv::PCA *pca;
 	private:
+		std::vector<cv::Mat> images;
+		cv::Mat pcaData;
+
 };
 
 #endif // NNINPUTSAMPLEPCA_H

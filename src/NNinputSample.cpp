@@ -1,9 +1,10 @@
 #include "NNinputSample.h"
 
-NNinputSample::NNinputSample(unsigned int numberOfTrainingElements, cv::Size imageSize){
+NNinputSample::NNinputSample(int numberOfTrainingElements, cv::Size imageSize){
 	this->imageSize = imageSize;
 	//this->networkInputSize = imageSize.width *imageSize.height;
 	this->trainingClasses =  cv::Mat(numberOfTrainingElements,1,CV_32FC1);
+	this->	numberOfTrainingElements = numberOfTrainingElements;
 
 }
 
@@ -34,4 +35,7 @@ cv::Mat NNinputSample::transformInput(cv::Mat image){
 int NNinputSample::getNetworkInputSize(){
 	return this->networkInputSize;
 
+}
+int NNinputSample::getNumberOfTrainingElements(){
+	return this->numberOfTrainingElements;
 }

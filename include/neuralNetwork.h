@@ -16,7 +16,7 @@ class neuralNetwork
 		void setNNparams(int inputSize);
 		int numberOfLayers();
 		std::vector<int> layerSizes;
-		int inputSize = 256;
+		int inputSize;
 		CvANN_MLP mlp;
 		CvANN_MLP_TrainParams params;
 

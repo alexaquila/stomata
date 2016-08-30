@@ -6,7 +6,7 @@ test::test(std::vector<data> *datasets, int numberOfTrainingImages, int numberOf
 	assert (numberOfTestImages > 0);
 	///SubImages have size 64x64
 	this->sizeOfRect = 64;
-	this->inputFeatures = new NNinputSampleQuarter(numberOfTrainingElements, cv::Size(this->sizeOfRect, this->sizeOfRect));
+	this->inputFeatures = new NNinputSamplePCA(numberOfTrainingElements, cv::Size(this->sizeOfRect, this->sizeOfRect));
 	this->numberOfTrainingElements = numberOfTrainingElements;
 	this->NN = new neuralNetwork(this->inputFeatures->getNetworkInputSize());
 }
@@ -59,6 +59,7 @@ void test::testData(){
 
 //Tests all the pixels, mirrors partially the original picture, if parts of the subImage (which is taken as sample) lie outside the original picture
 cv::Mat test::positiveMatchesMirrored(data currentData){
+
 	cv::Size imageSize = currentData.imageSize();
     cv::Mat result(imageSize.height, imageSize.width, CV_32F);
 	double angleInRad = M_PI / 180.0 * currentData.angle;
@@ -69,16 +70,14 @@ cv::Mat test::positiveMatchesMirrored(data currentData){
 	if((sizeBefRot % 2)	!= 0)
 		++sizeBefRot ;
 	for(int y=0; y<imageSize.height; ++y){
+		cout << "pixelstuff " << y << endl;
 		for(int x=0; x<imageSize.width; ++x){
 			cv::Point point(x,y);
 			cv::Mat sampleImage = rotation::getSubImageMirrored(currentData.getImage(), point, sizeBefRot);
 			sampleImage = rotation::rotateImageCropped(sampleImage, currentData.angle, cropfactor, this->sizeOfRect);
-			cv::Mat transformedSampleImage = this->inputFeatures->transformInput(sampleImage);
-			cv::Mat sample(1, this->inputFeatures->getNetworkInputSize(), CV_32FC1);
-			uchar* img_d = transformedSampleImage.data;
-			for(int j = 0; j < this->inputFeatures->getNetworkInputSize();  ++j){
-				sample.at<float>(0,j) =  img_d[j];
-			}
+			//cv::normalize(sampleImage, sampleImage, 0, 255, cv::NORM_MINMAX, CV_8UC1);
+			cv::Mat sample = this->inputFeatures->transformInput(sampleImage);
+		//cout << "sample  " << sample.cols << " , " <<sample.rows  << endl;
 			cv::Mat predicted = NN->predictNN(sample);
 			result.at<float>(y,x) = predicted.at<float>(0,0);
 			}
@@ -94,6 +93,7 @@ void test::generateTrainingData(){
 		//negative sample: -1 , positive sample (stomata found): 1
 		std::uniform_int_distribution<int> classDistribution(0,1);
 		int whichClass = classDistribution(generator);
+//whichClass = 1;
 		if(whichClass == 0)
 			whichClass = -1;
 	//	cout << " whichClass " << whichClass << endl;
@@ -105,13 +105,13 @@ void test::generateTrainingData(){
             data  currentData = datasets->at(dataInt);
             //getRotatedImage throws exception when the sample is part of the wrong class
             try{
-				sampleImage = getRotatedImage(currentData, whichClass);
+				sampleImage = getRandomRotatedImage(currentData, whichClass);
 			}
 			catch(int e){
 				// cout << "wrong class found "<< whichClass<<endl;
 				continue;
 			}
-			cv::normalize(sampleImage, sampleImage, 0, 255, cv::NORM_MINMAX, CV_8UC1);
+			//cv::normalize(sampleImage, sampleImage, 0, 255, cv::NORM_MINMAX, CV_8UC1);
 			this->inputFeatures->addSample(sampleImage, whichClass);
 			foundSample =true;
 		}
@@ -119,7 +119,7 @@ void test::generateTrainingData(){
 	cout << "Finished sampling classes"<<endl;
 }
 
-cv::Mat test::getRotatedImage(data currentData, int whichClass){
+cv::Mat test::getRandomRotatedImage(data currentData, int whichClass){
 	double angleInRad = M_PI / 180.0 * currentData.angle;
 	double cropfactor = abs(cos(angleInRad)) + abs(sin(angleInRad));
 	//get the size to crop a picture of desired size after rotation.
