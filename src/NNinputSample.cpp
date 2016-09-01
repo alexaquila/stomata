@@ -30,8 +30,22 @@ void NNinputSample::addSample(cv::Mat image, int whichClass){
 }
 
 cv::Mat NNinputSample::transformInput(cv::Mat image){
-	return image;
+	cv::Mat ret;
+	uchar* img_d = image.data;
+	for(int j = 0; j < this->networkInputSize;  ++j)
+		ret.at<float>(0,j) =  img_d[j];
+	return ret;
 }
+
+
+cv::Mat NNinputSample::transformInputMitAusgabe(cv::Mat image){
+	cv::Mat ret;
+	uchar* img_d = image.data;
+	for(int j = 0; j < this->networkInputSize;  ++j)
+		ret.at<float>(0,j) =  img_d[j];
+	return ret;
+}
+
 int NNinputSample::getNetworkInputSize(){
 	return this->networkInputSize;
 

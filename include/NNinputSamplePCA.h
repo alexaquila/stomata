@@ -13,6 +13,7 @@ class NNinputSamplePCA : public NNinputSample{
 		virtual ~NNinputSamplePCA();
 		void addSample(cv::Mat image, int whichClass);
 		cv::Mat transformInput(cv::Mat image);
+		cv::Mat transformInputMitAusgabe(cv::Mat image);
 		cv::Mat getTransformedSamples();
 	protected:
 		cv::PCA *pca;

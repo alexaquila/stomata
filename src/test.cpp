@@ -6,7 +6,7 @@ test::test(std::vector<data> *datasets, int numberOfTrainingImages, int numberOf
 	assert (numberOfTestImages > 0);
 	///SubImages have size 64x64
 	this->sizeOfRect = 64;
-	this->inputFeatures = new NNinputSamplePCA(numberOfTrainingElements, cv::Size(this->sizeOfRect, this->sizeOfRect));
+	this->inputFeatures = new NNinputSampleQuarter(numberOfTrainingElements, cv::Size(this->sizeOfRect, this->sizeOfRect));
 	this->numberOfTrainingElements = numberOfTrainingElements;
 	this->NN = new neuralNetwork(this->inputFeatures->getNetworkInputSize());
 }
@@ -75,8 +75,8 @@ cv::Mat test::positiveMatchesMirrored(data currentData){
 			cv::Point point(x,y);
 			cv::Mat sampleImage = rotation::getSubImageMirrored(currentData.getImage(), point, sizeBefRot);
 			sampleImage = rotation::rotateImageCropped(sampleImage, currentData.angle, cropfactor, this->sizeOfRect);
-			//cv::normalize(sampleImage, sampleImage, 0, 255, cv::NORM_MINMAX, CV_8UC1);
 			cv::Mat sample = this->inputFeatures->transformInput(sampleImage);
+			//cv::Mat sample = this->inputFeatures->transformInputMitAusgabe(sampleImage);
 		//cout << "sample  " << sample.cols << " , " <<sample.rows  << endl;
 			cv::Mat predicted = NN->predictNN(sample);
 			result.at<float>(y,x) = predicted.at<float>(0,0);
@@ -93,7 +93,6 @@ void test::generateTrainingData(){
 		//negative sample: -1 , positive sample (stomata found): 1
 		std::uniform_int_distribution<int> classDistribution(0,1);
 		int whichClass = classDistribution(generator);
-//whichClass = 1;
 		if(whichClass == 0)
 			whichClass = -1;
 	//	cout << " whichClass " << whichClass << endl;

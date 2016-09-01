@@ -1,7 +1,8 @@
 #include "NNinputSampleQuarter.h"
 
 NNinputSampleQuarter::NNinputSampleQuarter(int numberOfTrainingElements, cv::Size  imageSize):NNinputSample(numberOfTrainingElements, imageSize){
-	this->networkInputSize = (imageSize.width * imageSize.height)/16;
+	this->reduceFactor = 4;
+	this->networkInputSize = (imageSize.width * imageSize.height)/(this->reduceFactor*this->reduceFactor);
 	this->trainingData = cv::Mat(numberOfTrainingElements, this->networkInputSize, CV_32FC1);
 
 
@@ -38,7 +39,7 @@ void NNinputSampleQuarter::addSample(cv::Mat image, int whichClass){
 }
 cv::Mat NNinputSampleQuarter::transformInput(cv::Mat image){
 	cv::Mat tempImage;
-	cv::resize(image, tempImage, cv::Size(this->imageSize.width/4, this->imageSize.height/4));
+	cv::resize(image, tempImage, cv::Size(this->imageSize.width/this->reduceFactor, this->imageSize.height/this->reduceFactor));
 	cv::Mat sample(1, this->getNetworkInputSize(), CV_32FC1);
 	uchar* img_d = tempImage.data;
 	for(int j = 0; j < this->getNetworkInputSize();  ++j){
