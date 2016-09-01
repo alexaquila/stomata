@@ -16,7 +16,7 @@ class NNinputSample{
 
 		virtual cv::Mat transformInput(cv::Mat image);
 		virtual cv::Mat transformInputMitAusgabe(cv::Mat image);
-
+		void setNumberOfTrainingElements(int numberOfTrainingElements);
 
 		int getNetworkInputSize();
 	protected:

@@ -17,18 +17,19 @@
 1471868548 source:/home/alex/projects/stomata/src/data.cpp
 	"data.h"
 
-1472543294 /home/alex/projects/stomata/include/test.h
+1472748041 /home/alex/projects/stomata/include/test.h
 	<iostream>
 	<random>
 	<assert.h>
 	"data.h"
-	"rotation.h"
+	"trainingDataGenerator.h"
+	"trainingDataRandomGenerator.h"
 	"neuralNetwork.h"
 	"NNinputSample.h"
 	"NNinputSampleQuarter.h"
 	"NNinputSamplePCA.h"
 
-1472628207 source:/home/alex/projects/stomata/src/test.cpp
+1472762965 source:/home/alex/projects/stomata/src/test.cpp
 	"test.h"
 
 1472497735 /home/alex/projects/stomata/include/neuralNetwork.h
@@ -46,21 +47,37 @@
 1472551603 source:/home/alex/projects/stomata/src/rotation.cpp
 	"rotation.h"
 
-1472588055 source:/home/alex/projects/stomata/src/NNinputSample.cpp
+1472762061 source:/home/alex/projects/stomata/src/NNinputSample.cpp
 	"NNinputSample.h"
 
-1472709898 /home/alex/projects/stomata/include/NNinputSample.h
+1472761946 /home/alex/projects/stomata/include/NNinputSample.h
 	"opencv2/opencv.hpp"
 
-1472592479 source:/home/alex/projects/stomata/src/NNinputSamplePCA.cpp
+1472732806 source:/home/alex/projects/stomata/src/NNinputSamplePCA.cpp
 	"NNinputSamplePCA.h"
 
 1472583531 /home/alex/projects/stomata/include/NNinputSamplePCA.h
 	<NNinputSample.h>
 
-1472570729 source:/home/alex/projects/stomata/src/NNinputSampleQuarter.cpp
+1472732888 source:/home/alex/projects/stomata/src/NNinputSampleQuarter.cpp
 	"NNinputSampleQuarter.h"
 
-1472551285 /home/alex/projects/stomata/include/NNinputSampleQuarter.h
-	<NNinputSample.h>
+1472747214 /home/alex/projects/stomata/include/NNinputSampleQuarter.h
+	"NNinputSample.h"
+
+1472762906 /home/alex/projects/stomata/include/trainingDataGenerator.h
+	"trainingDataRandomGenerator.h"
+
+1472763126 source:/home/alex/projects/stomata/src/trainingDataGenerator.cpp
+	"trainingDataGenerator.h"
+
+1472763109 /home/alex/projects/stomata/include/trainingDataRandomGenerator.h
+	"rotation.h"
+	"data.h"
+	"NNinputSample.h"
+	"NNinputSampleQuarter.h"
+	"opencv2/opencv.hpp"
+
+1472763189 source:/home/alex/projects/stomata/src/trainingDataRandomGenerator.cpp
+	"trainingDataRandomGenerator.h"
 

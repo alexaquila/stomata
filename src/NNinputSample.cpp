@@ -53,3 +53,9 @@ int NNinputSample::getNetworkInputSize(){
 int NNinputSample::getNumberOfTrainingElements(){
 	return this->numberOfTrainingElements;
 }
+
+
+void NNinputSample::setNumberOfTrainingElements(int numberOfTrainingElements){
+	this->	numberOfTrainingElements = numberOfTrainingElements;
+	this->trainingClasses =  cv::Mat(numberOfTrainingElements,1,CV_32FC1);
+}

@@ -5,7 +5,10 @@
 #include <random>
 #include <assert.h>
 #include "data.h"
-#include "rotation.h"
+
+#include "trainingDataGenerator.h"
+#include "trainingDataRandomGenerator.h"
+
 #include "neuralNetwork.h"
 #include "NNinputSample.h"
 #include "NNinputSampleQuarter.h"
@@ -15,36 +18,33 @@ class test{
 	public:
 		int numberOfTestImages;
 		int numberOfTrainingImages;
-		test(std::vector<data> *datasets, int numberOfTrainingImagesint, int  numberOfTrainingElements);
+		test(std::vector<data> *datasets, int numberOfTrainingImages, int  numberOfTrainingElements);
 		virtual ~test();
 
 		void startTesting();
 		int getNumberOfImages();
-		void generateTrainingData();
+
+
 
 	protected:
 	private:
 		//int networkInputSize = 256;
 		int sizeOfRect;
-		std::default_random_engine generator;
+
 		neuralNetwork* NN;
 		std::vector<data> *datasets;
-		//The maximal distance in pixel from the sample point to the ground-truth data, in which vicinity the sample count as stomata-class
-		int maxDistance = 7;
-
-		cv::Mat getRandomRotatedImage(data currentData, int whichClass);
 
 		cv::Mat positiveMatches(data currentData);
 		cv::Mat positiveMatchesMirrored(data currentData);
-		int getClass(data currentData, cv::Point point);
 		void testData();
 		NNinputSample * inputFeatures;
-
 
 		int numberOfTrainingElements;
 
 
 		int currentTrainingImage = 0;
 		int currentTrainingStomata =0;
+
+		trainingDataRandomGenerator * trainGen;
 };
 #endif // TEST_H

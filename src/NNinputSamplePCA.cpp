@@ -15,9 +15,10 @@ void NNinputSamplePCA::addSample(cv::Mat image, int whichClass){
 	trainingClasses.at<float>(currentImageIndex,0) = whichClass;
 	cv::Mat tempImage;
 	this->images.push_back(image);
-	//cv::resize(image, tempImage, cv::Size(this->imageSize.width/4, this->imageSize.height/4));
+	cv::resize(image, tempImage, cv::Size(this->imageSize.width/this->reduceFactor, this->imageSize.height/this->reduceFactor));
 
 	image.clone().reshape(1, 1).convertTo(this->pcaData.row(currentImageIndex), CV_32FC1);
+
 	++this->currentImageIndex;
 }
 
@@ -38,10 +39,6 @@ cv::Mat NNinputSamplePCA::transformInput(cv::Mat image){
 	cv::Mat retData = cv::Mat(1, this->networkInputSize, CV_32FC1);
 	pca->project(tempImage, retData);
 	//std::cout << " retData " <<  retData.cols << " , " << retData.rows<< std::endl;
-	uchar* img_d = retData.data;
-	for(int j = 0; j < this->getNetworkInputSize();  ++j){
-		retData.at<float>(0,j) =  img_d[j];
-	}
 	return retData;
 }
 

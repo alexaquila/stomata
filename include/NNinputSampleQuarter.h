@@ -1,12 +1,11 @@
 #ifndef NNINPUTSAMPLEQUARTER_H
 #define NNINPUTSAMPLEQUARTER_H
 
-#include <NNinputSample.h>
+#include "NNinputSample.h"
 
 
 
-class NNinputSampleQuarter : public NNinputSample
-{
+class NNinputSampleQuarter : public NNinputSample{
 	public:
 		NNinputSampleQuarter(int numberOfTrainingElements, cv::Size  imageSize);
 		virtual ~NNinputSampleQuarter();

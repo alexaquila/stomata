@@ -54,6 +54,8 @@
 		<Unit filename="include/neuralNetwork.h" />
 		<Unit filename="include/rotation.h" />
 		<Unit filename="include/test.h" />
+		<Unit filename="include/trainingDataGenerator.h" />
+		<Unit filename="include/trainingDataRandomGenerator.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/NNinputSample.cpp" />
 		<Unit filename="src/NNinputSamplePCA.cpp" />
@@ -62,6 +64,8 @@
 		<Unit filename="src/neuralNetwork.cpp" />
 		<Unit filename="src/rotation.cpp" />
 		<Unit filename="src/test.cpp" />
+		<Unit filename="src/trainingDataGenerator.cpp" />
+		<Unit filename="src/trainingDataRandomGenerator.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
