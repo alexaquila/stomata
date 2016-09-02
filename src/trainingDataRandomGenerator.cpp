@@ -7,10 +7,9 @@ trainingDataRandomGenerator::trainingDataRandomGenerator(std::vector<data> *data
 	this->inputFeatures = inputFeatures;
 }
 
-trainingDataRandomGenerator::~trainingDataRandomGenerator()
-{
-	//dtor
+trainingDataRandomGenerator::~trainingDataRandomGenerator(){
 }
+
 /* Idea: generate with a probability of 0.5 a positive or negative trainingsdata.
  * For that, get a random trainingspicture and sample random elments, until a match in regard of the class is found.
  */
@@ -29,7 +28,6 @@ NNinputSample * trainingDataRandomGenerator::generateTrainingData(){
 			cv::Mat sampleImage;
 			std::uniform_int_distribution<int> pictureDistribution(0,this->numberOfTrainingImages-1);
 			int dataInt = pictureDistribution(generator);
-///			cout << "Choose data number " <<dataInt << endl;
             data  currentData = datasets->at(dataInt);
             //getRotatedImage throws exception when the sample is part of the wrong class
             try{
@@ -46,7 +44,6 @@ NNinputSample * trainingDataRandomGenerator::generateTrainingData(){
 	}
 	cout << "Finished sampling classes"<<endl;
 	return inputFeatures;
-
 }
 
 cv::Mat trainingDataRandomGenerator::getRotatedImage(data currentData, int whichClass){
@@ -86,6 +83,3 @@ int trainingDataRandomGenerator::getClass(data currentData, cv::Point point){
 	}
 	return currentClass;
 }
-
-
-

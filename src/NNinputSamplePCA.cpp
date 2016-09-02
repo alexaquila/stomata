@@ -1,7 +1,7 @@
 #include "NNinputSamplePCA.h"
 
 NNinputSamplePCA::NNinputSamplePCA(int numberOfTrainingElements, cv::Size  imageSize):NNinputSample(numberOfTrainingElements, imageSize){
-	this->reduceFactor = 1;
+	this->reduceFactor = 4;
 	this->pcaData = cv::Mat(numberOfTrainingElements, imageSize.width * imageSize.height /(this->reduceFactor*this->reduceFactor), CV_32FC1);
 	this->networkInputSize = 64;
 }
@@ -16,8 +16,8 @@ void NNinputSamplePCA::addSample(cv::Mat image, int whichClass){
 	cv::Mat tempImage;
 	this->images.push_back(image);
 	cv::resize(image, tempImage, cv::Size(this->imageSize.width/this->reduceFactor, this->imageSize.height/this->reduceFactor));
-
-	image.clone().reshape(1, 1).convertTo(this->pcaData.row(currentImageIndex), CV_32FC1);
+//	if(currentImageIndex%2 ==0)
+		tempImage.clone().reshape(1, 1).convertTo(this->pcaData.row(currentImageIndex), CV_32FC1);
 
 	++this->currentImageIndex;
 }
@@ -26,16 +26,17 @@ cv::Mat NNinputSamplePCA::getTransformedSamples(){
 	std::cout << "Perform PCA. " << std::endl;
 	this->pca = new cv::PCA(this->pcaData, cv::Mat(), CV_PCA_DATA_AS_ROW, this->networkInputSize);
     this->trainingData = cv::Mat(this->getNumberOfTrainingElements(), this->networkInputSize, CV_32FC1);
-	for( int i = 0; i < this->getNumberOfTrainingElements(); ++i)
-		this->trainingData.row(i) = this->transformInput(images[i]);
-	return this->trainingData;
 
+	for( int i = 0; i < this->getNumberOfTrainingElements(); ++i){
+		this->trainingData.row(i) = this->transformInput(images[i]);
+	}
+	return this->trainingData;
 }
 
 cv::Mat NNinputSamplePCA::transformInput(cv::Mat image){
 	cv::Mat tempImage;
 	cv::resize(image, tempImage, cv::Size(this->imageSize.width/this->reduceFactor, this->imageSize.height/this->reduceFactor));
-	image.clone().reshape(1, 1).convertTo(tempImage, CV_32FC1, 1, 0);
+	tempImage.clone().reshape(1, 1).convertTo(tempImage, CV_32FC1, 1, 0);
 	cv::Mat retData = cv::Mat(1, this->networkInputSize, CV_32FC1);
 	pca->project(tempImage, retData);
 	//std::cout << " retData " <<  retData.cols << " , " << retData.rows<< std::endl;
@@ -61,7 +62,6 @@ cv::Mat NNinputSamplePCA::transformInputMitAusgabe(cv::Mat image){
 	cv::Mat rec2;
 	pca->backProject(retData, rec2);
 	cv::normalize(rec2, rec2, 0, 255, cv::NORM_MINMAX, CV_8UC1);
-
 
 	rec2 = rec2.reshape(0, images[0].rows);
 	imshow("3", rec2);

@@ -9,10 +9,9 @@ test::test(std::vector<data> *datasets, int numberOfTrainingImages, int numberOf
 	assert (numberOfTestImages > 0);
 	///SubImages have size 64x64
 	this->sizeOfRect = 64;
-	this->trainGen = new trainingDataRandomGenerator(datasets, numberOfTrainingImages, numberOfTrainingElements, sizeOfRect);
+	this->trainGen = new trainingDataGenerator(datasets, numberOfTrainingImages, numberOfTrainingElements, sizeOfRect);
 
 	this->numberOfTrainingElements = numberOfTrainingElements;
-
 }
 
 test::~test(){

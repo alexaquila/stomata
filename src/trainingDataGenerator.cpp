@@ -4,25 +4,19 @@ trainingDataGenerator::trainingDataGenerator(std::vector<data> *datasets, int nu
 	, int numberOfTrainingElements, int sizeOfRect)
 	:trainingDataRandomGenerator(datasets, numberOfTrainingImages, numberOfTrainingElements,sizeOfRect){
 	this->numberOfTrainingElements =0;
-
 }
 
-trainingDataGenerator::~trainingDataGenerator()
-{
+trainingDataGenerator::~trainingDataGenerator(){
 	//dtor
 }
 
 NNinputSample * trainingDataGenerator::generateTrainingData(){
-
 	std::vector<cv::Mat> *trainingImages = getTrainingImages();
 	std::cout << "Number of training Images " << trainingImages->size() << std::endl;
-
 	this->inputFeatures = new NNinputSampleQuarter(this->numberOfTrainingElements, cv::Size(this->sizeOfRect, this->sizeOfRect));
 	for(int i = 0; i<trainingImages->size() ;i=i+2){
-		cv::Mat temp1 = trainingImages->at(i);
-        this->inputFeatures->addSample(temp1, 1);
-		cv::Mat temp2 = trainingImages->at(i+1);
-        this->inputFeatures->addSample(temp2, -1);
+        this->inputFeatures->addSample(trainingImages->at(i), 1);
+        this->inputFeatures->addSample(trainingImages->at(i+1), -1);
 	}
 	delete trainingImages;
 	return this->inputFeatures;
@@ -37,7 +31,6 @@ std::vector<cv::Mat> *trainingDataGenerator::getTrainingImages(){
 		double angleInRad = M_PI / 180.0 * currentData.angle;
 		double cropfactor = abs(cos(angleInRad)) + abs(sin(angleInRad));
 		int sizeBefRot 	= ceil(sizeOfRect*cropfactor);
-
 		//Assert even number
 		if((sizeBefRot % 2)	!= 0)
 			++sizeBefRot ;
@@ -61,7 +54,7 @@ std::vector<cv::Mat> *trainingDataGenerator::getTrainingImages(){
 						std::uniform_int_distribution<int> yDistribution(sizeBefRot/2,imageSize.height-sizeBefRot/2);
 						int y = yDistribution(generator);
 						point = cv::Point(x,y);
-						cv::Mat subImag = rotation::getSubImage(currentData.getImage(), point, sizeBefRot);
+						subImag = rotation::getSubImage(currentData.getImage(), point, sizeBefRot);
 						subImag = rotation::rotateImageCropped(subImag, currentData.angle, cropfactor, this->sizeOfRect);
 						foundNegativeSample = noStomataInVicinity(currentData, point);
                     }
@@ -73,7 +66,6 @@ std::vector<cv::Mat> *trainingDataGenerator::getTrainingImages(){
 	}
 	return trainingImages;
 }
-
 
 bool trainingDataGenerator::noStomataInVicinity(data currentData, cv::Point point){
 	//false equals a stomata in close vicinity

@@ -2,8 +2,7 @@
 void neuralNetwork::setNNparams(int inputSize){
 	this->inputSize = inputSize;
 	layerSizes.push_back(inputSize);
-	layerSizes.push_back(255);
-	layerSizes.push_back(128);
+	layerSizes.push_back(256);
 	layerSizes.push_back(1);
 
 	//std::cout << "number of layers " << layerSizes.size() <<std::endl;
@@ -36,6 +35,8 @@ neuralNetwork::~neuralNetwork()
 	//dtor
 }
 void neuralNetwork::trainNN(cv::Mat& trainingData, cv::Mat& trainingClasses){
+	std::cout << "Training..." << std::endl;
+
 	this->mlp.train(trainingData, trainingClasses, cv::Mat(), cv::Mat(), params);
 }
 

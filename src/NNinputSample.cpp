@@ -5,7 +5,6 @@ NNinputSample::NNinputSample(int numberOfTrainingElements, cv::Size imageSize){
 	//this->networkInputSize = imageSize.width *imageSize.height;
 	this->trainingClasses =  cv::Mat(numberOfTrainingElements,1,CV_32FC1);
 	this->	numberOfTrainingElements = numberOfTrainingElements;
-
 }
 
 NNinputSample::~NNinputSample(){

@@ -4,6 +4,7 @@
 #include "data.h"
 #include "NNinputSample.h"
 #include "NNinputSampleQuarter.h"
+#include "NNinputSamplePCA.h"
 #include "opencv2/opencv.hpp"
 
 class trainingDataRandomGenerator{

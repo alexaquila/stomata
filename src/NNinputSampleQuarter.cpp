@@ -4,15 +4,11 @@ NNinputSampleQuarter::NNinputSampleQuarter(int numberOfTrainingElements, cv::Siz
 	this->reduceFactor = 4;
 	this->networkInputSize = (imageSize.width * imageSize.height)/(this->reduceFactor*this->reduceFactor);
 	this->trainingData = cv::Mat(numberOfTrainingElements, this->networkInputSize, CV_32FC1);
-
-
 }
 
 NNinputSampleQuarter::~NNinputSampleQuarter(){
 
 }
-
-
 
 void NNinputSampleQuarter::addSample(cv::Mat image, int whichClass){
 	trainingClasses.at<float>(currentImageIndex,0) = whichClass;
@@ -23,11 +19,13 @@ void NNinputSampleQuarter::addSample(cv::Mat image, int whichClass){
 
 	++this->currentImageIndex;
 }
+
 cv::Mat NNinputSampleQuarter::transformInput(cv::Mat image){
 	cv::Mat tempImage;
 	cv::resize(image, tempImage, cv::Size(this->imageSize.width/this->reduceFactor, this->imageSize.height/this->reduceFactor));
+//	cv::imshow("Image", tempImage);
+//	cv::waitKey(-1);
 	cv::Mat sample;
 	tempImage.clone().reshape(1, 1).convertTo(sample, CV_32FC1);
-//	std::cout << "asdasd" << std::endl;
 	return sample;
 }
