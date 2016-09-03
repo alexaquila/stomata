@@ -3,6 +3,7 @@
 #include "rotation.h"
 #include "data.h"
 #include "NNinputSample.h"
+#include "NNinputSampleFisher.h"
 #include "NNinputSampleQuarter.h"
 #include "NNinputSamplePCA.h"
 #include "opencv2/opencv.hpp"

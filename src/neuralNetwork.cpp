@@ -2,7 +2,7 @@
 void neuralNetwork::setNNparams(int inputSize){
 	this->inputSize = inputSize;
 	layerSizes.push_back(inputSize);
-	layerSizes.push_back(256);
+	layerSizes.push_back(128);
 	layerSizes.push_back(1);
 
 	//std::cout << "number of layers " << layerSizes.size() <<std::endl;

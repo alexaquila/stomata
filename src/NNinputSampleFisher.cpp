@@ -1,17 +1,17 @@
-#include "NNinputSamplePCA.h"
+#include "NNinputSampleFisher.h"
 
-NNinputSamplePCA::NNinputSamplePCA(int numberOfTrainingElements, cv::Size  imageSize):NNinputSample(numberOfTrainingElements, imageSize){
-	this->reduceFactor = 2;
+NNinputSampleFisher::NNinputSampleFisher(int numberOfTrainingElements, cv::Size  imageSize):NNinputSample(numberOfTrainingElements, imageSize){
+	this->reduceFactor = 4;
 	this->pcaData = cv::Mat(numberOfTrainingElements, imageSize.width * imageSize.height /(this->reduceFactor*this->reduceFactor), CV_32FC1);
 	this->networkInputSize = 128;
 }
 
-NNinputSamplePCA::~NNinputSamplePCA()//
+NNinputSampleFisher::~NNinputSampleFisher()//
 {
 	//dtor
 }
 
-void NNinputSamplePCA::addSample(cv::Mat image, int whichClass){
+void NNinputSampleFisher::addSample(cv::Mat image, int whichClass){
 	trainingClasses.at<float>(currentImageIndex,0) = whichClass;
 	cv::Mat tempImage;
 	this->images.push_back(image);
@@ -22,7 +22,7 @@ void NNinputSamplePCA::addSample(cv::Mat image, int whichClass){
 	++this->currentImageIndex;
 }
 
-cv::Mat NNinputSamplePCA::getTransformedSamples(){
+cv::Mat NNinputSampleFisher::getTransformedSamples(){
 	std::cout << "Perform PCA. " << std::endl;
 	this->pca = new cv::PCA(this->pcaData, cv::Mat(), CV_PCA_DATA_AS_ROW, this->networkInputSize);
     this->trainingData = cv::Mat(this->getNumberOfTrainingElements(), this->networkInputSize, CV_32FC1);
@@ -33,7 +33,7 @@ cv::Mat NNinputSamplePCA::getTransformedSamples(){
 	return this->trainingData;
 }
 
-cv::Mat NNinputSamplePCA::transformInput(cv::Mat image){
+cv::Mat NNinputSampleFisher::transformInput(cv::Mat image){
 	cv::Mat tempImage;
 	cv::resize(image, tempImage, cv::Size(this->imageSize.width/this->reduceFactor, this->imageSize.height/this->reduceFactor));
 	tempImage.clone().reshape(1, 1).convertTo(tempImage, CV_32FC1, 1, 0);
@@ -43,7 +43,7 @@ cv::Mat NNinputSamplePCA::transformInput(cv::Mat image){
 	return retData;
 }
 
-cv::Mat NNinputSamplePCA::transformInputMitAusgabe(cv::Mat image){
+cv::Mat NNinputSampleFisher::transformInputMitAusgabe(cv::Mat image){
 	std::cout << "Ausgabe"<< std::endl;
 
 	imshow("1",image );

@@ -13,7 +13,7 @@ trainingDataGenerator::~trainingDataGenerator(){
 NNinputSample * trainingDataGenerator::generateTrainingData(){
 	std::vector<cv::Mat> *trainingImages = getTrainingImages();
 	std::cout << "Number of training Images " << trainingImages->size() << std::endl;
-	this->inputFeatures = new NNinputSampleQuarter(this->numberOfTrainingElements, cv::Size(this->sizeOfRect, this->sizeOfRect));
+	this->inputFeatures = new NNinputSampleFisher(this->numberOfTrainingElements, cv::Size(this->sizeOfRect, this->sizeOfRect));
 	for(int i = 0; i<trainingImages->size() ;i=i+2){
         this->inputFeatures->addSample(trainingImages->at(i), 1);
         this->inputFeatures->addSample(trainingImages->at(i+1), -1);

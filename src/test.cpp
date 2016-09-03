@@ -84,8 +84,9 @@ cv::Mat test::positiveMatchesMirrored(data currentData){
 			sampleImage = rotation::rotateImageCropped(sampleImage, currentData.angle, cropfactor, this->sizeOfRect);
 			cv::Mat sample = this->inputFeatures->transformInput(sampleImage);
 			//cv::Mat sample = this->inputFeatures->transformInputMitAusgabe(sampleImage);
-		//cout << "sample  " << sample.cols << " , " <<sample.rows  << endl;
+			//cout << "sample  " << sample.cols << " , " <<sample.rows  << endl;
 			cv::Mat predicted = NN->predictNN(sample);
+			//cout << "predicted.at<float>(0,0) " << predicted.at<float>(0,0) << endl;
 			result.at<float>(y,x) = predicted.at<float>(0,0);
 			}
 	}
