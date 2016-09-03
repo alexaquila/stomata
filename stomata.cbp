@@ -46,8 +46,10 @@
 			<Add library="/usr/lib/x86_64-linux-gnu/libopencv_imgproc.so" />
 			<Add library="/usr/lib/x86_64-linux-gnu/libopencv_highgui.so" />
 			<Add library="/usr/lib/x86_64-linux-gnu/libopencv_ml.so" />
+			<Add library="/usr/lib/x86_64-linux-gnu/libopencv_*" />
 		</Linker>
 		<Unit filename="include/NNinputSample.h" />
+		<Unit filename="include/NNinputSampleFisher.h" />
 		<Unit filename="include/NNinputSamplePCA.h" />
 		<Unit filename="include/NNinputSampleQuarter.h" />
 		<Unit filename="include/data.h" />
@@ -58,6 +60,7 @@
 		<Unit filename="include/trainingDataRandomGenerator.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/NNinputSample.cpp" />
+		<Unit filename="src/NNinputSampleFisher.cpp" />
 		<Unit filename="src/NNinputSamplePCA.cpp" />
 		<Unit filename="src/NNinputSampleQuarter.cpp" />
 		<Unit filename="src/data.cpp" />

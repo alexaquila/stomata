@@ -1,9 +1,9 @@
 #include "NNinputSamplePCA.h"
 
 NNinputSamplePCA::NNinputSamplePCA(int numberOfTrainingElements, cv::Size  imageSize):NNinputSample(numberOfTrainingElements, imageSize){
-	this->reduceFactor = 2;
+	this->reduceFactor = 4;
 	this->pcaData = cv::Mat(numberOfTrainingElements, imageSize.width * imageSize.height /(this->reduceFactor*this->reduceFactor), CV_32FC1);
-	this->networkInputSize = 128;
+	this->networkInputSize = 100;
 }
 
 NNinputSamplePCA::~NNinputSamplePCA()//
@@ -17,7 +17,7 @@ void NNinputSamplePCA::addSample(cv::Mat image, int whichClass){
 	this->images.push_back(image);
 	cv::resize(image, tempImage, cv::Size(this->imageSize.width/this->reduceFactor, this->imageSize.height/this->reduceFactor));
 //	if(currentImageIndex%2 ==0)
-		tempImage.clone().reshape(1, 1).convertTo(this->pcaData.row(currentImageIndex), CV_32FC1);
+	tempImage.clone().reshape(1, 1).convertTo(this->pcaData.row(currentImageIndex), CV_32FC1);
 
 	++this->currentImageIndex;
 }
@@ -40,6 +40,8 @@ cv::Mat NNinputSamplePCA::transformInput(cv::Mat image){
 	cv::Mat retData = cv::Mat(1, this->networkInputSize, CV_32FC1);
 	pca->project(tempImage, retData);
 	//std::cout << " retData " <<  retData.cols << " , " << retData.rows<< std::endl;
+	cv::normalize(retData, retData, 0, 255, cv::NORM_MINMAX, CV_32FC1);
+
 	return retData;
 }
 
@@ -50,7 +52,7 @@ cv::Mat NNinputSamplePCA::transformInputMitAusgabe(cv::Mat image){
 	cv::Mat tempImage;
 	cv::resize(image, tempImage, cv::Size(this->imageSize.width/this->reduceFactor, this->imageSize.height/this->reduceFactor));
 
-	tempImage.clone().reshape(1, 1).convertTo(tempImage, CV_32FC1, 1, 0);
+	tempImage.clone().reshape(1, 1).convertTo(tempImage, CV_32FC1);
 
 	cv::Mat rec1 =  tempImage.reshape(0, images[0].rows/this->reduceFactor);
 	cv::normalize(rec1, rec1, 0, 255, cv::NORM_MINMAX, CV_8UC1);

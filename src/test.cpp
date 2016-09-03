@@ -1,16 +1,12 @@
 #include "test.h"
 test::test(std::vector<data> *datasets, int numberOfTrainingImages, int numberOfTrainingElements){
-
-
 	this->datasets = datasets;
 	this->numberOfTrainingImages = numberOfTrainingImages;
-
 	numberOfTestImages = this->getNumberOfImages() - numberOfTrainingImages;
 	assert (numberOfTestImages > 0);
 	///SubImages have size 64x64
 	this->sizeOfRect = 64;
 	this->trainGen = new trainingDataGenerator(datasets, numberOfTrainingImages, numberOfTrainingElements, sizeOfRect);
-
 	this->numberOfTrainingElements = numberOfTrainingElements;
 }
 
@@ -23,10 +19,8 @@ test::~test(){
 void test::startTesting( ){
 	cout << "Generate training data." << endl;
 	this->inputFeatures = this->trainGen->generateTrainingData();
-
 	cv::Mat trainingClasses = this->inputFeatures->getClasses();
 	cv::Mat trainingData = this->inputFeatures->getTransformedSamples();
-
 	cout << "Training neural network." << endl;
 	this->NN = new neuralNetwork(this->inputFeatures->getNetworkInputSize());
 	this->NN->trainNN(trainingData, trainingClasses);
@@ -37,9 +31,9 @@ void test::startTesting( ){
 void test::testData(){
 	for(int i=0; i< this->numberOfTestImages; ++i){
 		data currentData = this->datasets->at(i+this->numberOfTrainingImages);
+		cv::Size imageSize = currentData.imageSize();
 		cout << "testing number " << i <<endl;
 		cv::Mat result = positiveMatchesMirrored(currentData);
-		cv::Size imageSize = currentData.imageSize();
 		cv::Mat mergeImage(imageSize.height, imageSize.width, CV_8UC3);
 		for(int y=0; y<imageSize.height; ++y){
 			for(int x=0; x<imageSize.width; ++x){
@@ -48,6 +42,7 @@ void test::testData(){
 					temp  = 255;
 				else
 					temp  = 0;
+				uchar temp2;
 				mergeImage.at<cv::Vec3b>(y,x)[0] = temp;
 				mergeImage.at<cv::Vec3b>(y,x)[1] = 0;
 				mergeImage.at<cv::Vec3b>(y,x)[2] = currentData.getImage().at<uchar>(y,x);
@@ -59,7 +54,6 @@ void test::testData(){
 			cv::circle(mergeImage, currentData.getCoordinate(j), 10 , CV_RGB(0, 255,0), 1);
 		cv::imshow(windowName + currentData.name, mergeImage);
 		cv::waitKey(-1);
-
 		cv::destroyWindow(windowName + currentData.name);
 	}
 }

@@ -16,6 +16,9 @@ class trainingDataGenerator: public trainingDataRandomGenerator{
 		int minDistance = 32;
 
 		bool noStomataInVicinity(data currentData, cv::Point point);
+
+
+
 	private:
 };
 

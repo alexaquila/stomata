@@ -15,11 +15,10 @@ class NNinputSampleFisher : public NNinputSample{
 		cv::Mat transformInputMitAusgabe(cv::Mat image);
 		cv::Mat getTransformedSamples();
 	protected:
-		cv::PCA *pca;
+		cv::LDA *lda;
 	private:
 		std::vector<cv::Mat> images;
-		cv::Mat pcaData;
-
+		cv::Mat ldaData;
 };
 
 #endif // NNinputSampleFisher_H

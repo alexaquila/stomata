@@ -15,7 +15,6 @@ class trainingDataRandomGenerator{
 
 		virtual NNinputSample * generateTrainingData();
 		int numberOfTrainingElements;
-
 	protected:
 
 		int numberOfTrainingImages;
