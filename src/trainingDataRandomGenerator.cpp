@@ -72,7 +72,7 @@ cv::Mat trainingDataRandomGenerator::getRotatedImage(data currentData, int which
 
 int trainingDataRandomGenerator::getClass(data currentData, cv::Point point){
 	//0 equals no stomata in close vicinity
-	int currentClass = -1;
+	int currentClass = 0;
 	for(int i= 0; i<currentData.numberOfStomata(); ++i){
 		cv::Point difference = point - currentData.getCoordinate(i);
 		double distance = difference.x*difference.x + difference.y*difference.y;
@@ -81,5 +81,24 @@ int trainingDataRandomGenerator::getClass(data currentData, cv::Point point){
 			break;
 		}
 	}
+	if(currentClass == 0){
+		if(noStomataInVicinity(currentData, point)){
+			currentClass =-1;
+		}
+	}
 	return currentClass;
+}
+
+bool trainingDataRandomGenerator::noStomataInVicinity(data currentData, cv::Point point){
+	//false equals a stomata in close vicinity
+	bool noNearNeighbor =true;
+	for(int i= 0; i<currentData.numberOfStomata(); ++i){
+		cv::Point difference = point - currentData.getCoordinate(i);
+		double distance = difference.x*difference.x + difference.y*difference.y;
+		if (distance<= minDistance*minDistance){
+			noNearNeighbor = false;
+			break;
+		}
+	}
+	return noNearNeighbor;
 }

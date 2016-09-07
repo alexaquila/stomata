@@ -4,6 +4,7 @@
 #include <iostream>
 #include "opencv2/opencv.hpp"
 #include "rotation.h"
+
 using namespace std;
 
 class data{

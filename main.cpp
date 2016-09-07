@@ -92,19 +92,19 @@ std::vector<data> getData(){
 
 				setRotationAngle(&currentData,  rotationPath + entry->d_name + ".rot");
 				//showStomata(currentData);
-/*
+				/*
 				string windowName = "Image ";
 				cv::namedWindow(windowName);
 				image = currentData.getImage();
 				cv::Point center(image.cols/2.0, image.rows/2.0);
-				cv::Mat rot = cv::getRotationMatrix2D(center, currentData.angle, 1.0);
-				cv::warpAffine(image, image, rot , image.size());
+				//cv::Mat rot = cv::getRotationMatrix2D(center, currentData.angle, 1.0);
+				//cv::warpAffine(image, image, rot , image.size());
 				for(int j = 0; j < currentData.numberOfStomata(); ++j)
-					cv::circle(image, currentData.getCoordinate(j), 20, CV_RGB(255,255,255),10);
+					cv::circle(image, currentData.getCoordinate(j), 2, CV_RGB(255,255,255),2);
 				cv::imshow(windowName + currentData.name, image);
 				cv::waitKey(-1);
 				cv::destroyWindow(windowName + currentData.name);
-*/
+				*/
 				datasets.push_back(currentData);
 				location.close();
 			}
@@ -116,8 +116,10 @@ std::vector<data> getData(){
 
 
 int main(void){
+	cout << "OpenCV version : " << CV_VERSION << endl;
+
 	std::vector<data> datasets = getData();
-	test testInstance = test(&datasets, 240, 1000);
+	test testInstance = test(&datasets, 240, 6360);
 	testInstance.startTesting();
 	return EXIT_SUCCESS;
 }

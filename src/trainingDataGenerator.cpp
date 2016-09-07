@@ -40,8 +40,20 @@ std::vector<cv::Mat> *trainingDataGenerator::getTrainingImages(){
 				if(currentStomata.y >=sizeBefRot/2 &&  currentStomata.y <= imageSize.height-sizeBefRot/2){
 					//Firstly: find a positive match
 					cv::Mat subImag = rotation::getSubImage(currentData.getImage(), currentStomata, sizeBefRot);
+//	cv::namedWindow("1");
+//	cv::imshow("1", subImag);
 					subImag = rotation::rotateImageCropped(subImag, currentData.angle, cropfactor, this->sizeOfRect);
+
+	//cv::namedWindow("2");
+//	cv::imshow("2", subImag);
+
+//	cv::waitKey(-1);
+
 					assert (subImag.rows == sizeOfRect && subImag.cols == sizeOfRect );
+
+					cv::normalize(subImag, subImag, 0, 255, cv::NORM_MINMAX, CV_32FC1);
+
+
 					trainingImages->push_back(subImag);
 					++this->numberOfTrainingElements;
 					//Then, find a negative sample, which has at least a distance of this->minDistance to all ground-truth-coordinates
@@ -57,6 +69,7 @@ std::vector<cv::Mat> *trainingDataGenerator::getTrainingImages(){
 						subImag = rotation::rotateImageCropped(subImag, currentData.angle, cropfactor, this->sizeOfRect);
 						foundNegativeSample = noStomataInVicinity(currentData, point);
                     }
+					cv::normalize(subImag, subImag, 0, 255, cv::NORM_MINMAX, CV_32FC1);
 					trainingImages->push_back(subImag);
 					++this->numberOfTrainingElements;
 				}
@@ -66,16 +79,4 @@ std::vector<cv::Mat> *trainingDataGenerator::getTrainingImages(){
 	return trainingImages;
 }
 
-bool trainingDataGenerator::noStomataInVicinity(data currentData, cv::Point point){
-	//false equals a stomata in close vicinity
-	bool noNearNeighbor =true;
-	for(int i= 0; i<currentData.numberOfStomata(); ++i){
-		cv::Point difference = point - currentData.getCoordinate(i);
-		double distance = difference.x*difference.x + difference.y*difference.y;
-		if (distance<= minDistance*minDistance){
-			noNearNeighbor = false;
-			break;
-		}
-	}
-	return noNearNeighbor;
-}
+

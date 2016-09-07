@@ -102,20 +102,22 @@ cv::Mat rotation::getSubImageMirrored(cv::Mat image, cv::Point center, int size)
 	cv::copyMakeBorder(image,imageTemp, size,size,size,size, cv::BORDER_REFLECT_101);
 	cv::Rect rect(leftUp + cv::Point(size, size) ,  rightDown + cv::Point(size , size));
 	cv::Mat result= imageTemp(rect);
+
 /*
-	string windowName = "Image ";
-	cv::namedWindow(windowName);
 
-	cv::imshow(windowName, image);
-	cv::waitKey(-1);
+	cv::namedWindow("1");
 
-	cv::imshow(windowName, imageTemp);
+	cv::imshow("1", image);
+//	cv::waitKey(-1);
+	cv::namedWindow("2");
+	cv::imshow("2", imageTemp);
+//	cv::waitKey(-1);
+	cv::namedWindow("3");
+	cv::imshow( "3", result);
 	cv::waitKey(-1);
-
-	cv::imshow(windowName, result);
-	cv::waitKey(-1);
-	cv::destroyWindow(windowName);
+	//cv::destroyWindow(windowName);
 */
+
 	assert (result.rows  == size);
 	return result;
 }

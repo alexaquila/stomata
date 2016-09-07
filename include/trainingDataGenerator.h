@@ -13,9 +13,9 @@ class trainingDataGenerator: public trainingDataRandomGenerator{
 	protected:
 		std::vector<cv::Mat> * getTrainingImages();
 		//The minimum distance in pixel from the sample point to the ground-truth data, in which vicinity the sample does NOT count as negatìve sample
-		int minDistance = 32;
 
-		bool noStomataInVicinity(data currentData, cv::Point point);
+
+
 
 
 

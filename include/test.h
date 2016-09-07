@@ -14,6 +14,8 @@
 #include "NNinputSampleQuarter.h"
 #include "NNinputSamplePCA.h"
 
+#include "opencv2/opencv.hpp"
+
 class test{
 	public:
 		int numberOfTestImages;
@@ -28,7 +30,7 @@ class test{
 
 	protected:
 	private:
-		//int networkInputSize = 256;
+		cv::Mat  getComponents(cv::Mat matrix);
 		int sizeOfRect;
 
 		neuralNetwork* NN;

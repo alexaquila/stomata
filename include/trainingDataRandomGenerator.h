@@ -16,13 +16,14 @@ class trainingDataRandomGenerator{
 		virtual NNinputSample * generateTrainingData();
 		int numberOfTrainingElements;
 	protected:
-
+		bool noStomataInVicinity(data currentData, cv::Point point);
 		int numberOfTrainingImages;
 		int sizeOfRect = 64;
 		int getClass(data currentData, cv::Point point);
 
 		//The maximum distance in pixel from the sample point to the ground-truth data, in which vicinity the sample count as stomata-class
-		int maxDistance = 7;
+		int maxDistance = 5;
+		int minDistance = 5;
 		std::default_random_engine generator;
 		std::vector<data> *datasets;
 		NNinputSample * inputFeatures;

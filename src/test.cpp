@@ -6,8 +6,8 @@ test::test(std::vector<data> *datasets, int numberOfTrainingImages, int numberOf
 	assert (numberOfTestImages > 0);
 	///SubImages have size 64x64
 	this->sizeOfRect = 64;
-	this->trainGen = new trainingDataGenerator(datasets, numberOfTrainingImages, numberOfTrainingElements, sizeOfRect);
 	this->numberOfTrainingElements = numberOfTrainingElements;
+	this->trainGen = new trainingDataGenerator(datasets, numberOfTrainingImages, numberOfTrainingElements, sizeOfRect);
 }
 
 test::~test(){
@@ -34,6 +34,7 @@ void test::testData(){
 		cv::Size imageSize = currentData.imageSize();
 		cout << "testing number " << i <<endl;
 		cv::Mat result = positiveMatchesMirrored(currentData);
+		cv::Mat connectedComponents = this->getComponents(result);
 		cv::Mat mergeImage(imageSize.height, imageSize.width, CV_8UC3);
 		for(int y=0; y<imageSize.height; ++y){
 			for(int x=0; x<imageSize.width; ++x){
@@ -42,7 +43,6 @@ void test::testData(){
 					temp  = 255;
 				else
 					temp  = 0;
-				uchar temp2;
 				mergeImage.at<cv::Vec3b>(y,x)[0] = temp;
 				mergeImage.at<cv::Vec3b>(y,x)[1] = 0;
 				mergeImage.at<cv::Vec3b>(y,x)[2] = currentData.getImage().at<uchar>(y,x);
@@ -89,6 +89,27 @@ cv::Mat test::positiveMatchesMirrored(data currentData){
 
 int test::getNumberOfImages(){
 	return datasets->size();
+}
+
+
+cv::Mat test::getComponents(cv::Mat image){
+	/*cv::Mat tempImage(imageSize.height, imageSize.width, CV_8UC1);
+	for(int y=0; y<imageSize.height; ++y){
+		for(int x=0; x<imageSize.width; ++x){
+			if(result.at<float>(y,x) >0)
+					tempImage  = 1;
+				else
+					tempImage  = 0;
+
+	*/
+	cv::Mat labels, stats, centroids;
+
+
+	//int numberOfComponents = cv::connectedComponentsWithStats(image,labels,stats,centroids,4);
+	//cout << "numberOfComponents " << numberOfComponents << endl;
+	//vector<cv::Point> centroids;
+	return labels;
+
 }
 /*
 cv::Mat trainingDataGenerator::positiveMatches(data currentData){
